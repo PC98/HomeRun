@@ -31,7 +31,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
         String restrictions = current.getRestrictions();
         TextView shelter_restrictions_widget = findViewById(R.id.shelter_detail_view_restrictions);
-        shelter_restrictions_widget.setText("Restrictions: " + restrictions);
+        shelter_restrictions_widget.setText("Restricted to: " + restrictions);
 
         String address = current.getAddress();
         TextView shelter_location_widget = findViewById(R.id.shelter_detail_view_location);

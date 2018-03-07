@@ -14,6 +14,8 @@ import com.example.android.homerun.R;
 import com.example.android.homerun.model.FilterCategories;
 import com.example.android.homerun.model.Shelter;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -49,10 +51,12 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
         TextView name = (TextView) listItemView.findViewById(R.id.shelter_name);
         TextView capacity = (TextView) listItemView.findViewById(R.id.shelter_capacity);
+        TextView gender = (TextView) listItemView.findViewById(R.id.shelter_gender);
 
         assert shelter != null;
         name.setText(shelter.getName());
         capacity.setText("Capacity: " + shelter.getCapacity());
+        gender.setText("Restricted to: " + shelter.getRestrictions());
 
         return listItemView;
     }
