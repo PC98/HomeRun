@@ -2,6 +2,7 @@ package com.example.android.homerun.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.android.homerun.R;
 import com.example.android.homerun.model.FilterCategories;
+import com.example.android.homerun.model.GenderCategories;
 import com.example.android.homerun.model.Shelter;
 
 import org.w3c.dom.Text;
@@ -108,9 +110,13 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                             default:
                                 data = originalList.get(i).getName().toLowerCase();
                         }
-                        if (data.contains(constraint_string) ||
-                                FuzzySearch.tokenSetRatio(constraint_string, data) >=
-                                        (filterCategory == FilterCategories.GENDER ? 90 : 45)) {
+
+                        if (filterCategory == FilterCategories.GENDER ?
+                                (data.equals(GenderCategories.ANYONE.toString().toLowerCase())
+                                        || data.startsWith(constraint_string) ||
+                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= 90) :
+                                (data.contains(constraint_string) ||
+                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= 45)) {
                             filteredArrList.add(originalList.get(i));
                         }
                     }
@@ -135,12 +141,20 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                                     s2_data = s2.getName().toLowerCase();
                             }
 
-                            if (s1_data.contains(constraint_string)) {
-                                if (!s2_data.contains(constraint_string)) {
+                            if (filterCategory == FilterCategories.GENDER ?
+                                    s1_data.startsWith(constraint_string) :
+                                    s1_data.contains(constraint_string)) {
+
+                                if (!(filterCategory == FilterCategories.GENDER ?
+                                        s2_data.startsWith(constraint_string) :
+                                        s2_data.contains(constraint_string))) {
                                     return -1;
                                 }
                                 return s1.getName().toLowerCase().compareTo(s2.getName().toLowerCase());
-                            } else if (s2_data.contains(constraint_string)) {
+
+                            } else if (filterCategory == FilterCategories.GENDER ?
+                                    s2_data.startsWith(constraint_string) :
+                                    s2_data.contains(constraint_string)) {
                                 return 1;
                             }
 
