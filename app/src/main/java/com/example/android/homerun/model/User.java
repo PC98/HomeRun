@@ -31,6 +31,11 @@ public class User {
     public String getPassword() {return password;}
     public AccountType getAccountType() {return accountType;}
     public String getId() {return id;}
-
+    public String getShelterId() {
+        return this.claimedShelterId;
+    }
     public void setId(String id) {this.id = id;}
+    public void setShelterId(String shelterId) {
+        this.claimedShelterId = shelterId;
+    }
 }

@@ -10,11 +10,13 @@ import android.widget.TextView;
 
 import com.example.android.homerun.R;
 import com.example.android.homerun.model.Shelter;
+import com.example.android.homerun.model.User;
 
 
 public class ShelterDetailActivity extends AppCompatActivity {
     Shelter current;
     int shelterCapacity;
+    User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shelter_detail);
 
         current = (Shelter) getIntent().getSerializableExtra("ShelterData");
+        currentUser = DashboardActivity.currentUser;
 
         setTitle(current.getName());
 
@@ -60,6 +63,16 @@ public class ShelterDetailActivity extends AppCompatActivity {
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String userShelter = currentUser.getShelterId();
+                // Can't book more than one shelter
+                if (userShelter != null) {
+                    android.app.AlertDialog.Builder rebookError  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
+                    rebookError.setMessage("You have already reserved a shelter!");
+                    rebookError.setTitle("Shelter Allowance Exceeded");
+                    rebookError.setPositiveButton("OK", null);
+                    rebookError.create().show();
+                    return;
+                }
                 AlertDialog.Builder box = new AlertDialog.Builder(ShelterDetailActivity.this);
                 box.setTitle("How many spots? [Capacity = " + shelterCapacity + "]");
                 String[] types = {"One Bed", "Two Beds", "Three Beds", "Four Beds"};
@@ -68,20 +81,21 @@ public class ShelterDetailActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         int spotsClaimed = which + 1;
                         if (spotsClaimed > shelterCapacity) {
-                            // Dialog Box tested locally
-                            AlertDialog errorCap = new AlertDialog.Builder(ShelterDetailActivity.this).create();
+                            // Exceeding Shelter Capacity
+                            android.app.AlertDialog.Builder errorCap = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
                             errorCap.setTitle("Shelter Capacity Exceeded");
                             errorCap.setMessage("Please Try Again!");
-                            errorCap.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog2, int which2) {
-                                            dialog2.dismiss();
-                                        }
-                                    });
-                            errorCap.show();
+                            errorCap.setPositiveButton("OK", null);
+                            errorCap.create().show();
 
                         } else {
-                            // Successful Reservation
+                            // Assign Shelter to User (at least locally, for now)
+                            currentUser.setShelterId(current.getId());
+                            android.app.AlertDialog.Builder success  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
+                            success.setMessage("You have successfully reserved a spot!");
+                            success.setTitle("Success!");
+                            success.setPositiveButton("OK", null);
+                            success.create().show();
                             // TODO: Update Shelter Capacity
                             // TODO: Add Cancelling Functionality
                             // Since we have to support cancelling reservations too,
