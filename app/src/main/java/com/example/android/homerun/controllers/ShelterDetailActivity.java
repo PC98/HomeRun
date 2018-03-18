@@ -63,7 +63,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String userShelter = currentUser.getClaimedShelterId();
+                Shelter userShelter = currentUser.getClaimedShelter();
                 // Can't book more than one shelter
                 if (userShelter != null) {
                     android.app.AlertDialog.Builder rebookError  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
@@ -90,7 +90,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
                         } else {
                             // Assign Shelter to User (at least locally, for now)
-                            currentUser.setClaimedShelterId(current.getId());
+                            currentUser.setClaimedShelter(current);
                             android.app.AlertDialog.Builder success  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
                             success.setMessage("You have successfully reserved a spot!");
                             success.setTitle("Success!");

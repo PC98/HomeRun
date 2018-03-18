@@ -119,16 +119,16 @@ public class UtilityMethods {
         */
     }
 
-    public static void updateUser(User user, String claimedShelterId, String claimedSpots) {
+    public static void updateUser(User user, Shelter claimedShelter, String claimedSpots) {
 
-        user.setClaimedShelterId(claimedShelterId);
+        user.setClaimedShelter(claimedShelter);
         user.setClaimedSpots(claimedSpots);
 
         FirebaseDatabase.getInstance().getReference()
                 .child(FirebaseConstants.DATABASE_USERS)
                 .child(user.getId())
-                .child(FirebaseConstants.DATABASE_CLAIMED_SHELTER_ID)
-                .setValue(user.getClaimedShelterId());
+                .child(FirebaseConstants.DATABASE_CLAIMED_SHELTER)
+                .setValue(user.getClaimedShelter());
 
         FirebaseDatabase.getInstance().getReference()
                 .child(FirebaseConstants.DATABASE_SHELTERS)

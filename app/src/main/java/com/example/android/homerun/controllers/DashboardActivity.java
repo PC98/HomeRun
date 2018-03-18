@@ -161,7 +161,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         dlgAlert.setMessage("Are you sure you want to logout?");
         dlgAlert.setTitle("Logout Confirmation");
-        dlgAlert.setPositiveButton("OK",
+        dlgAlert.setNegativeButton("LOGOUT",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
@@ -192,7 +192,7 @@ public class DashboardActivity extends AppCompatActivity {
                 item.getIcon().setAlpha(100);
 
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-                final Shelter claimedShelter = getShelterById(DashboardActivity.currentUser.getClaimedShelterId());
+                final Shelter claimedShelter = currentUser.getClaimedShelter();
                 String message;
 
                 dlgAlert.setTitle(String.format("Hi %s!", DashboardActivity.currentUser.getName()));
@@ -239,18 +239,6 @@ public class DashboardActivity extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private Shelter getShelterById(String id) {
-        if (id == null) {
-            return null;
-        }
-        for (Shelter shelter: shelterList) {
-            if(id.equals(shelter.getId())) {
-                return shelter;
-            }
-        }
-        return null;
     }
 
     /**
