@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import android.text.Editable;
@@ -63,8 +64,8 @@ public class DashboardActivity extends AppCompatActivity {
         mToastToShow.show();
         showProgress(true);
 
-        DatabaseReference shelterRef = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_SHELTERS);
+        Query shelterQuery = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.DATABASE_SHELTERS).orderByChild(FirebaseConstants.DATABASE_SHELTERS_NAME);
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -124,7 +125,7 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.w("Firebase", "loadPost:onCancelled", databaseError.toException());
             }
         };
-        shelterRef.addListenerForSingleValueEvent(eventListener);
+        shelterQuery.addListenerForSingleValueEvent(eventListener);
 
         ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, FilterCategories.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
