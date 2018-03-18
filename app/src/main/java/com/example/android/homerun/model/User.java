@@ -11,6 +11,9 @@ public class User {
     private AccountType accountType;
     private String id;
 
+    private String claimedShelterId;
+    private String claimedSpots;
+
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
@@ -20,6 +23,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.accountType = accountType;
+        this.claimedShelterId = null;
     }
 
     public String getName() {return name;}
