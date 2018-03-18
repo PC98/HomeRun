@@ -25,10 +25,6 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
         setTitle(current.getName());
 
-        String name = current.getName();
-        TextView shelter_name_widget = findViewById(R.id.shelter_detail_view_name);
-        shelter_name_widget.setText(name);
-
         String capacity = current.getCapacity();
         TextView shelter_capacity_widget = findViewById(R.id.shelter_detail_view_cap);
         shelter_capacity_widget.setText("Capacity: " + capacity);
