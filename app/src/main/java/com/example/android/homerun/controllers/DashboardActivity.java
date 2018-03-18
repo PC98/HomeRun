@@ -13,6 +13,7 @@ import com.example.android.homerun.R;
 import com.example.android.homerun.model.FirebaseConstants;
 import com.example.android.homerun.model.FilterCategories;
 import com.example.android.homerun.model.Shelter;
+import com.example.android.homerun.model.User;
 import com.example.android.homerun.model.UtilityMethods;
 import com.example.android.homerun.view.ShelterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import android.text.Editable;
@@ -45,6 +47,7 @@ public class DashboardActivity extends AppCompatActivity {
     private EditText mEditTextView;
     private Spinner mFilterCategories;
     private View mView;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +56,36 @@ public class DashboardActivity extends AppCompatActivity {
 
         setTitle("Shelters");
 
+        String currentUserId = (String) getIntent().getSerializableExtra("userId");
+
+        Query userQuery = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.DATABASE_USERS).child(currentUserId);
+        ValueEventListener userQueryEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentUser = (User) dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        userQuery.addListenerForSingleValueEvent(userQueryEventListener);
+
         mProgressView = findViewById(R.id.dashboard_progress);
         mListView = (ListView) findViewById(R.id.shelter_list);
         mEditTextView = (EditText) findViewById(R.id.filter_string);
         mFilterCategories = (Spinner) findViewById(R.id.filter_category_spinner);
         mView = findViewById(R.id.filter_layout);
 
-        final Toast mToastToShow = Toast.makeText(getApplicationContext(),"Login successful. Fetching Data.", Toast.LENGTH_LONG);
+        final Toast mToastToShow = Toast.makeText(getApplicationContext(), "Login successful. Fetching Data.", Toast.LENGTH_LONG);
         mToastToShow.show();
         showProgress(true);
 
-        DatabaseReference shelterRef = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_SHELTERS);
-        ValueEventListener eventListener = new ValueEventListener() {
+        Query shelterQuery = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.DATABASE_SHELTERS).orderByChild(FirebaseConstants.DATABASE_SHELTERS_NAME);
+        ValueEventListener shelterQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()) {
@@ -124,7 +144,7 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.w("Firebase", "loadPost:onCancelled", databaseError.toException());
             }
         };
-        shelterRef.addListenerForSingleValueEvent(eventListener);
+        shelterQuery.addListenerForSingleValueEvent(shelterQueryEventListener);
 
         ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, FilterCategories.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

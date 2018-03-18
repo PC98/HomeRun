@@ -4,11 +4,9 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.homerun.R;
 import com.example.android.homerun.model.Shelter;
@@ -26,10 +24,6 @@ public class ShelterDetailActivity extends AppCompatActivity {
         current = (Shelter) getIntent().getSerializableExtra("ShelterData");
 
         setTitle(current.getName());
-
-        String name = current.getName();
-        TextView shelter_name_widget = findViewById(R.id.shelter_detail_view_name);
-        shelter_name_widget.setText(name);
 
         String capacity = current.getCapacity();
         TextView shelter_capacity_widget = findViewById(R.id.shelter_detail_view_cap);
