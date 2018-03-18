@@ -47,7 +47,7 @@ public class DashboardActivity extends AppCompatActivity {
     private EditText mEditTextView;
     private Spinner mFilterCategories;
     private View mView;
-    private User currentUser;
+    public static User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
