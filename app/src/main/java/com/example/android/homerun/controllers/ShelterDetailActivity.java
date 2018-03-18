@@ -28,7 +28,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
         setTitle(current.getName());
 
-        String capacity = current.getCapacity();
+        String capacity = current.getCapacityString();
         TextView shelter_capacity_widget = findViewById(R.id.shelter_detail_view_cap);
         shelter_capacity_widget.setText("Capacity: " + capacity);
 
@@ -49,7 +49,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         shelter_notes_widget.setText("Special Notes: " + notes);
 
         try {
-            shelterCapacity =  Integer.parseInt(current.getCapacity());
+            shelterCapacity =  Integer.parseInt(current.getCapacityString());
         } catch(Exception e) {
             // TODO: Normalize Capacity Information
             // So some capacity data is not parsable to an integer
@@ -63,7 +63,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String userShelter = currentUser.getShelterId();
+                Shelter userShelter = currentUser.getClaimedShelter();
                 // Can't book more than one shelter
                 if (userShelter != null) {
                     android.app.AlertDialog.Builder rebookError  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
@@ -90,7 +90,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
                         } else {
                             // Assign Shelter to User (at least locally, for now)
-                            currentUser.setShelterId(current.getId());
+                            currentUser.setClaimedShelter(current);
                             android.app.AlertDialog.Builder success  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
                             success.setMessage("You have successfully reserved a spot!");
                             success.setTitle("Success!");

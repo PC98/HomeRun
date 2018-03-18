@@ -57,7 +57,8 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
         assert shelter != null;
         name.setText(shelter.getName());
-        capacity.setText("Capacity: " + shelter.getCapacity());
+
+        capacity.setText("Capacity: " + shelter.getCapacityString());
         gender.setText("Restricted to: " + shelter.getRestrictions());
 
         return listItemView;

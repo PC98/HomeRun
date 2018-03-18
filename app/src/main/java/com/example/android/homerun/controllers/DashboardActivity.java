@@ -19,7 +19,6 @@ import com.example.android.homerun.view.ShelterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -48,6 +47,7 @@ public class DashboardActivity extends AppCompatActivity {
     private Spinner mFilterCategories;
     private View mView;
     public static User currentUser;
+    private ArrayList<Shelter> shelterList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class DashboardActivity extends AppCompatActivity {
         ValueEventListener userQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                currentUser = (User) dataSnapshot.getValue(User.class);
+                DashboardActivity.currentUser = (User) dataSnapshot.getValue(User.class);
             }
 
             @Override
@@ -92,7 +92,8 @@ public class DashboardActivity extends AppCompatActivity {
                     InputStream inputStream = getResources().openRawResource(R.raw.shelter);
                     UtilityMethods.createShelterDatabase(inputStream);
                 }
-                ArrayList<Shelter> shelterList = new ArrayList<>();
+
+                shelterList = new ArrayList<>();
                 for (DataSnapshot shelterDataSnapshot: dataSnapshot.getChildren()) {
                     shelterList.add(shelterDataSnapshot.getValue(Shelter.class));
                 }
@@ -157,7 +158,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         dlgAlert.setMessage("Are you sure you want to logout?");
         dlgAlert.setTitle("Logout Confirmation");
-        dlgAlert.setPositiveButton("OK",
+        dlgAlert.setNegativeButton("LOGOUT",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
@@ -179,9 +180,60 @@ public class DashboardActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.logout_action) {
-            FirebaseAuth.getInstance().signOut();
-            finish();
+        if (id == R.id.user_action) {
+            if(DashboardActivity.currentUser == null) {
+                item.setEnabled(false);
+                item.getIcon().setAlpha(50);
+            } else {
+                item.setEnabled(true);
+                item.getIcon().setAlpha(100);
+
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+                final Shelter claimedShelter = currentUser.getClaimedShelter();
+                String message;
+
+                dlgAlert.setTitle(String.format("Hi %s!", DashboardActivity.currentUser.getName()));
+
+                if (claimedShelter == null) {
+                    message = "You currently hold no spots.";
+                } else {
+                    String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
+                    message = String.format("You currently hold %s %s spots at %s",
+                            spots[1], spots[0], claimedShelter.getName());
+                }
+
+                dlgAlert.setNeutralButton("VACATE SPOTS",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
+                                UtilityMethods.updateUser(DashboardActivity.currentUser, null, null);
+
+                                if(spots[0].equals("family")) {
+                                    UtilityMethods.updateShelter(claimedShelter,
+                                            claimedShelter.getCurrentFamilyCapacity() + Integer.parseInt(spots[1]),
+                                            null);
+                                } else {
+                                    UtilityMethods.updateShelter(claimedShelter, null,
+                                            claimedShelter.getCurrentIndividualCapacity() + Integer.parseInt(spots[1]));
+                                }
+
+                            }
+                        });
+
+                dlgAlert.setNegativeButton("LOGOUT",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut();
+                                finish();
+                            }
+                        });
+
+                dlgAlert.setMessage(message);
+                AlertDialog dlg = dlgAlert.create();
+                dlg.show();
+                dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(
+                        claimedShelter != null);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
