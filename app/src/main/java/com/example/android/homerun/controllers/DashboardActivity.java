@@ -49,7 +49,7 @@ public class DashboardActivity extends AppCompatActivity {
     private EditText mEditTextView;
     private Spinner mFilterCategories;
     private View mView;
-    private User currentUser;
+    public static User currentUser;
     private ArrayList<Shelter> shelterList;
 
     @Override
@@ -66,7 +66,7 @@ public class DashboardActivity extends AppCompatActivity {
         ValueEventListener userQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                currentUser = (User) dataSnapshot.getValue(User.class);
+                DashboardActivity.currentUser = (User) dataSnapshot.getValue(User.class);
             }
 
             @Override
@@ -184,7 +184,7 @@ public class DashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.user_action) {
-            if(currentUser == null) {
+            if(DashboardActivity.currentUser == null) {
                 item.setEnabled(false);
                 item.getIcon().setAlpha(50);
             } else {
@@ -192,15 +192,15 @@ public class DashboardActivity extends AppCompatActivity {
                 item.getIcon().setAlpha(100);
 
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-                final Shelter claimedShelter = getShelterById(currentUser.getClaimedShelterId());
+                final Shelter claimedShelter = getShelterById(DashboardActivity.currentUser.getClaimedShelterId());
                 String message;
 
-                dlgAlert.setTitle(String.format("Hi %s!", currentUser.getName()));
+                dlgAlert.setTitle(String.format("Hi %s!", DashboardActivity.currentUser.getName()));
 
                 if (claimedShelter == null) {
                     message = "You currently hold no spots.";
                 } else {
-                    String[] spots = currentUser.getClaimedSpots().split("/");
+                    String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
                     message = String.format("You currently hold %s %s spots at %s",
                             spots[1], spots[0], claimedShelter.getName());
                 }
@@ -208,8 +208,8 @@ public class DashboardActivity extends AppCompatActivity {
                 dlgAlert.setNeutralButton("VACATE SPOTS",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                String[] spots = currentUser.getClaimedSpots().split("/");
-                                UtilityMethods.updateUser(currentUser, null, null);
+                                String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
+                                UtilityMethods.updateUser(DashboardActivity.currentUser, null, null);
                                 /*
                                 if(spots[0].equals("family")) {
                                     UtilityMethods.updateShelter(claimedShelter,

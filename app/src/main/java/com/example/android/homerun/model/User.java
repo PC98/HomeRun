@@ -37,6 +37,5 @@ public class User {
 
     public void setClaimedShelterId(String s) {this.claimedShelterId = s;}
     public void setClaimedSpots(String s) {this.claimedSpots = s;}
-
     public void setId(String id) {this.id = id;}
 }
