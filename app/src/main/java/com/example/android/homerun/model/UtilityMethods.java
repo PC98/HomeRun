@@ -94,4 +94,46 @@ public class UtilityMethods {
             }
         }
     }
+
+    public static void updateShelter(Shelter shelter, Integer currentFamilyCapacity, Integer currentIndividualCapacity) {
+        /*
+        if (currentFamilyCapacity == null) {
+            shelter.setCurrentIndividualCapacity(currentIndividualCapacity);
+
+            FirebaseDatabase.getInstance().getReference()
+                    .child(FirebaseConstants.DATABASE_SHELTERS)
+                    .child(shelter.getId())
+                    .child(FirebaseConstants.DATABASE_CUR_INDIVIDUAL_CAPACITY)
+                    .setValue(shelter.getCurrentIndividualCapacity());
+
+        } else {
+            shelter.setCurrentFamilyCapacity(currentFamilyCapacity);
+
+            FirebaseDatabase.getInstance().getReference()
+                    .child(FirebaseConstants.DATABASE_SHELTERS)
+                    .child(shelter.getId())
+                    .child(FirebaseConstants.DATABASE_CUR_FAMILY_CAPACITY)
+                    .setValue(shelter.getCurrentFamilyCapacity());
+        }
+
+        */
+    }
+
+    public static void updateUser(User user, String claimedShelterId, String claimedSpots) {
+
+        user.setClaimedShelterId(claimedShelterId);
+        user.setClaimedSpots(claimedSpots);
+
+        FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.DATABASE_USERS)
+                .child(user.getId())
+                .child(FirebaseConstants.DATABASE_CLAIMED_SHELTER_ID)
+                .setValue(user.getClaimedShelterId());
+
+        FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.DATABASE_SHELTERS)
+                .child(user.getId())
+                .child(FirebaseConstants.DATABASE_CLAIMED_SPOTS)
+                .setValue(user.getClaimedSpots());
+    }
 }
