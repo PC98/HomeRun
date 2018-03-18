@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -20,7 +19,6 @@ import com.example.android.homerun.view.ShelterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -40,7 +38,6 @@ import android.widget.Toast;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -210,7 +207,7 @@ public class DashboardActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
                                 UtilityMethods.updateUser(DashboardActivity.currentUser, null, null);
-                                /*
+
                                 if(spots[0].equals("family")) {
                                     UtilityMethods.updateShelter(claimedShelter,
                                             claimedShelter.getCurrentFamilyCapacity() + Integer.parseInt(spots[1]),
@@ -218,7 +215,7 @@ public class DashboardActivity extends AppCompatActivity {
                                 } else {
                                     UtilityMethods.updateShelter(claimedShelter, null,
                                             claimedShelter.getCurrentIndividualCapacity() + Integer.parseInt(spots[1]));
-                                }*/
+                                }
 
                             }
                         });

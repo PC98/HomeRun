@@ -28,7 +28,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
         setTitle(current.getName());
 
-        String capacity = current.getCapacity();
+        String capacity = current.getCapacityString();
         TextView shelter_capacity_widget = findViewById(R.id.shelter_detail_view_cap);
         shelter_capacity_widget.setText("Capacity: " + capacity);
 
@@ -49,7 +49,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         shelter_notes_widget.setText("Special Notes: " + notes);
 
         try {
-            shelterCapacity =  Integer.parseInt(current.getCapacity());
+            shelterCapacity =  Integer.parseInt(current.getCapacityString());
         } catch(Exception e) {
             // TODO: Normalize Capacity Information
             // So some capacity data is not parsable to an integer

@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class Shelter implements Serializable {
     private String id;
     private String name;
-    private String capacity;
     private String restrictions;
     private double longitude;
     private double latitude;
@@ -17,7 +16,10 @@ public class Shelter implements Serializable {
     private String phoneNumber;
     private AgeCategories ageCategory;
     private GenderCategories genderCategory;
-
+    private Integer originalFamilyCapacity;
+    private Integer originalIndividualCapacity;
+    private Integer currentFamilyCapacity;
+    private Integer currentIndividualCapacity;
 
     public Shelter() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -31,8 +33,20 @@ public class Shelter implements Serializable {
         return name;
     }
 
-    public String getCapacity() {
-        return capacity;
+    public Integer getOriginalIndividualCapacity() {
+        return originalIndividualCapacity;
+    }
+
+    public Integer getOriginalFamilyCapacity() {
+        return originalFamilyCapacity;
+    }
+
+    public Integer getCurrentIndividualCapacity() {
+        return currentIndividualCapacity;
+    }
+
+    public Integer getCurrentFamilyCapacity() {
+        return currentFamilyCapacity;
     }
 
     public String getRestrictions() {
@@ -63,12 +77,36 @@ public class Shelter implements Serializable {
 
     public GenderCategories getGenderCategory() { return genderCategory; }
 
-    public Shelter(String id, String name, String capacity, String restrictions, double longitude,
+    public void setCurrentIndividualCapacity(Integer i) {this.currentIndividualCapacity = i;}
+
+    public void setCurrentFamilyCapacity(Integer i) {this.currentFamilyCapacity = i;}
+
+    public String getCapacityString() {
+        String capacityString = "";
+        if (currentIndividualCapacity != null) {
+            capacityString += currentIndividualCapacity + " individual spots";
+
+            if (currentFamilyCapacity != null) {
+                capacityString += ", ";
+            }
+        }
+        if (currentFamilyCapacity != null) {
+            capacityString += currentFamilyCapacity + " family spots";
+        }
+        if (currentIndividualCapacity == null && currentFamilyCapacity == null) {
+            capacityString += "N/A";
+        }
+        return capacityString;
+    }
+
+    public Shelter(String id, String name, Integer originalIndividualCapacity,
+                   Integer originalFamilyCapacity, String restrictions, double longitude,
                    double latitude, String address, String specialNotes, String phoneNumber,
                    AgeCategories ageCategory, GenderCategories genderCategory) {
         this.id = id;
         this.name = name;
-        this.capacity = capacity;
+        this.originalIndividualCapacity = originalIndividualCapacity;
+        this.originalFamilyCapacity = originalFamilyCapacity;
         this.restrictions = restrictions;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -77,5 +115,8 @@ public class Shelter implements Serializable {
         this.phoneNumber = phoneNumber;
         this.ageCategory = ageCategory;
         this.genderCategory = genderCategory;
+
+        this.currentIndividualCapacity = originalIndividualCapacity;
+        this.currentFamilyCapacity = originalFamilyCapacity;
     }
 }
