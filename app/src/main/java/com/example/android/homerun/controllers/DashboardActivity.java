@@ -48,6 +48,7 @@ public class DashboardActivity extends AppCompatActivity {
     private View mView;
     public static User currentUser;
     private ArrayList<Shelter> shelterList;
+    private ShelterAdapter shelterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,7 @@ public class DashboardActivity extends AppCompatActivity {
                     shelterList.add(shelterDataSnapshot.getValue(Shelter.class));
                 }
 
-                final ShelterAdapter shelterAdapter = new ShelterAdapter(DashboardActivity.this, shelterList);
+                shelterAdapter = new ShelterAdapter(DashboardActivity.this, shelterList);
 
                 assert mListView != null;
                 mListView.setAdapter(shelterAdapter);
@@ -183,10 +184,8 @@ public class DashboardActivity extends AppCompatActivity {
         if (id == R.id.user_action) {
             if(DashboardActivity.currentUser == null) {
                 item.setEnabled(false);
-                item.getIcon().setAlpha(50);
             } else {
                 item.setEnabled(true);
-                item.getIcon().setAlpha(100);
 
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
                 final Shelter claimedShelter = currentUser.getClaimedShelter();
@@ -219,7 +218,7 @@ public class DashboardActivity extends AppCompatActivity {
 
                                 final Toast vacateSuccess = Toast.makeText(getApplicationContext(), "You have successful vacated your spot(s).", Toast.LENGTH_LONG);
                                 vacateSuccess.show();
-
+                                shelterAdapter.notifyDataSetChanged();
                             }
                         });
 
