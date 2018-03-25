@@ -130,7 +130,7 @@ public class UtilityMethods {
                 .setValue(user.getClaimedShelter());
 
         FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_SHELTERS)
+                .child(FirebaseConstants.DATABASE_USERS)
                 .child(user.getId())
                 .child(FirebaseConstants.DATABASE_CLAIMED_SPOTS)
                 .setValue(user.getClaimedSpots());

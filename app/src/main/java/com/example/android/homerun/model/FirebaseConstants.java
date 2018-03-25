@@ -11,6 +11,6 @@ public class FirebaseConstants {
     public static final String DATABASE_CUR_FAMILY_CAPACITY = "currentFamilyCapacity";
     public static final String DATABASE_CUR_INDIVIDUAL_CAPACITY = "currentIndividualCapacity";
     public static final String DATABASE_CLAIMED_SHELTER = "claimedShelter";
-    public static final String DATABASE_CLAIMED_SPOTS = "claimedSports";
+    public static final String DATABASE_CLAIMED_SPOTS = "claimedSpots";
     public static final String EMAIL_DOMAIN = "@homerun.com";
 }
