@@ -19,8 +19,10 @@
     <string name="Username">Username</string>
     <string name="password">Password</string>
     <string name="user_info">User Info</string>
+    <string name="map">Map</string>
     <string name="register">Don\'t Have an Account? Register Now</string>
     <string name="choose_account_type">Choose Account Type</string>
     <string name="search">Search...</string>
     <string name="reserve_a_spot">Reserve a spot</string>
+    <string name="title_activity_maps">Shelter Map</string>
 </resources>
