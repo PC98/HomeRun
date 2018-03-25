@@ -15,11 +15,12 @@ import com.example.android.homerun.model.UtilityMethods;
 
 
 public class ShelterDetailActivity extends AppCompatActivity {
-    Shelter current;
-    User currentUser;
-    int shelterType;
-    Integer shelterFamilyCapacity;
-    Integer shelterIndividualCapacity;
+    private Shelter current;
+    private User currentUser;
+    private int shelterType;
+    private Integer shelterFamilyCapacity;
+    private Integer shelterIndividualCapacity;
+    private TextView shelter_capacity_widget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +32,8 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
         setTitle(current.getName());
 
-        String capacity = current.getCapacityString();
-        TextView shelter_capacity_widget = findViewById(R.id.shelter_detail_view_cap);
-        shelter_capacity_widget.setText("Capacity: " + capacity);
+        shelter_capacity_widget = findViewById(R.id.shelter_detail_view_cap);
+        shelter_capacity_widget.setText("Capacity: " + current.getCapacityString());
 
         String restrictions = current.getRestrictions();
         TextView shelter_restrictions_widget = findViewById(R.id.shelter_detail_view_restrictions);
@@ -133,6 +133,8 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             success.setPositiveButton("OK", null);
                             success.create().show();
                             dialog.dismiss();
+
+                            shelter_capacity_widget.setText("Capacity: " + current.getCapacityString());
                         }
                     }
                 });
