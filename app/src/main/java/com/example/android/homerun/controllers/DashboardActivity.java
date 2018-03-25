@@ -145,7 +145,7 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.w("Firebase", "loadPost:onCancelled", databaseError.toException());
             }
         };
-        shelterQuery.addListenerForSingleValueEvent(shelterQueryEventListener);
+        shelterQuery.addValueEventListener(shelterQueryEventListener);
 
         ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, FilterCategories.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -208,7 +208,7 @@ public class DashboardActivity extends AppCompatActivity {
                                 String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
                                 UtilityMethods.updateUser(DashboardActivity.currentUser, null, null);
 
-                                if(spots[0].equals("family")) {
+                                if(spots[0].equalsIgnoreCase("family")) {
                                     UtilityMethods.updateShelter(claimedShelter,
                                             claimedShelter.getCurrentFamilyCapacity() + Integer.parseInt(spots[1]),
                                             null);
@@ -216,6 +216,9 @@ public class DashboardActivity extends AppCompatActivity {
                                     UtilityMethods.updateShelter(claimedShelter, null,
                                             claimedShelter.getCurrentIndividualCapacity() + Integer.parseInt(spots[1]));
                                 }
+
+                                final Toast vacateSuccess = Toast.makeText(getApplicationContext(), "You have successful vacated your spot(s).", Toast.LENGTH_LONG);
+                                vacateSuccess.show();
 
                             }
                         });
