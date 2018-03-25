@@ -184,8 +184,10 @@ public class DashboardActivity extends AppCompatActivity {
         if (id == R.id.user_action) {
             if(DashboardActivity.currentUser == null) {
                 item.setEnabled(false);
+                item.getIcon().setAlpha(64);
             } else {
                 item.setEnabled(true);
+                item.getIcon().setAlpha(255);
 
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
                 final Shelter claimedShelter = currentUser.getClaimedShelter();
@@ -236,6 +238,8 @@ public class DashboardActivity extends AppCompatActivity {
                 dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(
                         claimedShelter != null);
             }
+        } else if (id == R.id.map_action) {
+            startActivity(new Intent(this, MapsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
