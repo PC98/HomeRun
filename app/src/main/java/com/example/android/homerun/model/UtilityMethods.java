@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -61,7 +62,7 @@ public class UtilityMethods {
         return pat.matcher(name).matches();
     }
 
-    public static void createShelterDatabase(InputStream inputStream) {
+    public static void createShelterDatabase(InputStream inputStream, ArrayList<Shelter> shelterList) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             reader.readLine(); // Skip the first line
@@ -78,6 +79,7 @@ public class UtilityMethods {
                         Integer.parseInt(row[3]),
                         row[4], Double.parseDouble(row[5]), Double.parseDouble(row[6]), row[7],
                         row[8], row[9], AgeCategories.valueOf(row[10]), GenderCategories.valueOf(row[11]));
+                shelterList.add(shelter);
                 FirebaseDatabase.getInstance().getReference()
                         .child(FirebaseConstants.DATABASE_SHELTERS)
                         .child(shelter.getId())
