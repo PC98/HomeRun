@@ -28,7 +28,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shelter_detail);
 
-        current = (Shelter) getIntent().getSerializableExtra("shelterObject");
+        current = (Shelter) DashboardActivity.shelterMap.get(getIntent().getStringExtra("shelterId"));
         currentUser = DashboardActivity.currentUser;
 
         setTitle(current.getName());
@@ -56,9 +56,8 @@ public class ShelterDetailActivity extends AppCompatActivity {
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Shelter userShelter = currentUser.getClaimedShelter();
                 // Can't book more than one shelter
-                if (userShelter != null) {
+                if (currentUser.getClaimedShelterId() != null) {
                     android.app.AlertDialog.Builder rebookError  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
                     rebookError.setMessage("You have already reserved a shelter!");
                     rebookError.setTitle("Shelter Allowance Exceeded");
@@ -127,8 +126,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
                                         current.getCurrentFamilyCapacity() - spotsClaimed, null);
                             }
                             spotsData += spotsClaimed;
-                            UtilityMethods.updateUser(currentUser, current, spotsData);
-                            DashboardActivity.shelterList.set(getIntent().getIntExtra("shelterIndex", 0), current);
+                            UtilityMethods.updateUser(currentUser, current.getId(), spotsData);
                             android.app.AlertDialog.Builder success  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
                             success.setMessage("You have successfully reserved your spot(s)!");
                             success.setTitle("Success!");

@@ -19,6 +19,7 @@ import com.example.android.homerun.view.ShelterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -48,7 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
     private Spinner mFilterCategories;
     private View mView;
     public static User currentUser;
-    public static ArrayList<Shelter> shelterList;
+    public static HashMap<String, Shelter> shelterMap;
     private ShelterAdapter shelterAdapter;
 
     @Override
@@ -83,29 +85,34 @@ public class DashboardActivity extends AppCompatActivity {
         };
         userQuery.addListenerForSingleValueEvent(userQueryEventListener);
 
-        final Query shelterQuery = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_SHELTERS).orderByChild(FirebaseConstants.DATABASE_SHELTERS_NAME);
+        DatabaseReference shelterRef = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.DATABASE_SHELTERS);
         ValueEventListener shelterQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DashboardActivity.shelterList = new ArrayList<>();
+                DashboardActivity.shelterMap = new HashMap<>();
+                ArrayList<Shelter> shelterList;
+                Log.i("a", "here");
 
                 if(!dataSnapshot.exists()) {
                     InputStream inputStream = getResources().openRawResource(R.raw.shelter);
-                    UtilityMethods.createShelterDatabase(inputStream, DashboardActivity.shelterList);
-                    DashboardActivity.shelterList.sort(new Comparator<Shelter>() {
-                        @Override
-                        public int compare(Shelter shelter, Shelter t1) {
-                            return shelter.getName().compareTo(t1.getName());
-                        }
-                    });
+                    UtilityMethods.createShelterDatabase(inputStream, DashboardActivity.shelterMap);
                 } else {
                     for (DataSnapshot shelterDataSnapshot : dataSnapshot.getChildren()) {
-                        DashboardActivity.shelterList.add(shelterDataSnapshot.getValue(Shelter.class));
+                        Shelter shelter = shelterDataSnapshot.getValue(Shelter.class);
+                        DashboardActivity.shelterMap.put(shelter.getId(), shelter);
                     }
                 }
+                shelterList = new ArrayList<>(shelterMap.values());
 
-                shelterAdapter = new ShelterAdapter(DashboardActivity.this, DashboardActivity.shelterList);
+                shelterList.sort(new Comparator<Shelter>() {
+                    @Override
+                    public int compare(Shelter shelter, Shelter t1) {
+                        return shelter.getName().compareTo(t1.getName());
+                    }
+                });
+
+                shelterAdapter = new ShelterAdapter(DashboardActivity.this, shelterList);
 
                 assert mListView != null;
                 mListView.setAdapter(shelterAdapter);
@@ -119,7 +126,7 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.w("Firebase", "loadPost:onCancelled", databaseError.toException());
             }
         };
-        shelterQuery.addListenerForSingleValueEvent(shelterQueryEventListener);
+        shelterRef.addListenerForSingleValueEvent(shelterQueryEventListener);
 
         // Add Text Change Listener to EditText
         mEditTextView.addTextChangedListener(new TextWatcher() {
@@ -149,8 +156,7 @@ public class DashboardActivity extends AppCompatActivity {
             {
                 Shelter shelter = (Shelter) adapter.getItemAtPosition(position);
                 Intent intent = new Intent(DashboardActivity.this, ShelterDetailActivity.class);
-                intent.putExtra("shelterObject", shelter);
-                intent.putExtra("shelterIndex", position);
+                intent.putExtra("shelterId", shelter.getId());
                 startActivity(intent);
             }
         });
@@ -215,7 +221,8 @@ public class DashboardActivity extends AppCompatActivity {
 
             } else {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-                final Shelter claimedShelter = currentUser.getClaimedShelter();
+                final Shelter claimedShelter =
+                        currentUser.getClaimedShelterId() == null ? null : shelterMap.get(currentUser.getClaimedShelterId());
                 String message;
 
                 dlgAlert.setTitle(String.format("Hi %s!", DashboardActivity.currentUser.getName()));
@@ -265,18 +272,12 @@ public class DashboardActivity extends AppCompatActivity {
                         claimedShelter != null);
             }
         } else if (id == R.id.map_action) {
-            if (DashboardActivity.shelterList == null) {
+            if (DashboardActivity.shelterMap == null) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
 
                 dlgAlert.setTitle("Hi!");
-                dlgAlert.setNegativeButton("LOGOUT",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                FirebaseAuth.getInstance().signOut();
-                                finish();
-                            }
-                        });
-                dlgAlert.setMessage("We are still fetching your details. You may choose to logout.");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setMessage("We are still fetching shelter details.");
                 dlgAlert.create().show();
             }
             startActivity(new Intent(this, MapsActivity.class));

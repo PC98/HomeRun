@@ -11,7 +11,7 @@ public class User {
     private AccountType accountType;
     private String id;
 
-    private Shelter claimedShelter;
+    private String claimedShelterId;
     private String claimedSpots;
 
     public User() {
@@ -23,7 +23,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.accountType = accountType;
-        this.claimedShelter = null;
+        this.claimedShelterId = null;
         this.claimedSpots = null;
     }
 
@@ -32,10 +32,10 @@ public class User {
     public String getPassword() {return password;}
     public AccountType getAccountType() {return accountType;}
     public String getId() {return id;}
-    public Shelter getClaimedShelter() {return claimedShelter;}
+    public String getClaimedShelterId() {return claimedShelterId;}
     public String getClaimedSpots() {return claimedSpots;}
 
-    public void setClaimedShelter(Shelter s) {this.claimedShelter = s;}
+    public void setClaimedShelterId(String s) {this.claimedShelterId = s;}
     public void setClaimedSpots(String s) {this.claimedSpots = s;}
     public void setId(String id) {this.id = id;}
 }
