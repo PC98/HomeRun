@@ -51,7 +51,7 @@ public class DashboardActivity extends AppCompatActivity {
     private View mView;
     public static User currentUser;
     public static HashMap<String, Shelter> shelterMap;
-    private ShelterAdapter shelterAdapter;
+    public static ShelterAdapter shelterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
