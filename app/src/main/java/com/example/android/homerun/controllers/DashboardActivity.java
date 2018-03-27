@@ -19,6 +19,7 @@ import com.example.android.homerun.view.ShelterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -38,6 +39,8 @@ import android.widget.Toast;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -47,7 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
     private Spinner mFilterCategories;
     private View mView;
     public static User currentUser;
-    private ArrayList<Shelter> shelterList;
+    public static HashMap<String, Shelter> shelterMap;
     private ShelterAdapter shelterAdapter;
 
     @Override
@@ -56,8 +59,16 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         setTitle("Shelters");
-
         String currentUserId = (String) getIntent().getSerializableExtra("userId");
+        mProgressView = findViewById(R.id.dashboard_progress);
+        mListView = (ListView) findViewById(R.id.shelter_list);
+        mEditTextView = (EditText) findViewById(R.id.filter_string);
+        mFilterCategories = (Spinner) findViewById(R.id.filter_category_spinner);
+        mView = findViewById(R.id.filter_layout);
+
+        final Toast mToastToShow = Toast.makeText(getApplicationContext(), "Login successful. Fetching Data.", Toast.LENGTH_LONG);
+        mToastToShow.show();
+        showProgress(true);
 
         Query userQuery = FirebaseDatabase.getInstance().getReference()
                 .child(FirebaseConstants.DATABASE_USERS).child(currentUserId);
@@ -74,68 +85,37 @@ public class DashboardActivity extends AppCompatActivity {
         };
         userQuery.addListenerForSingleValueEvent(userQueryEventListener);
 
-        mProgressView = findViewById(R.id.dashboard_progress);
-        mListView = (ListView) findViewById(R.id.shelter_list);
-        mEditTextView = (EditText) findViewById(R.id.filter_string);
-        mFilterCategories = (Spinner) findViewById(R.id.filter_category_spinner);
-        mView = findViewById(R.id.filter_layout);
-
-        final Toast mToastToShow = Toast.makeText(getApplicationContext(), "Login successful. Fetching Data.", Toast.LENGTH_LONG);
-        mToastToShow.show();
-        showProgress(true);
-
-        Query shelterQuery = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_SHELTERS).orderByChild(FirebaseConstants.DATABASE_SHELTERS_NAME);
+        DatabaseReference shelterRef = FirebaseDatabase.getInstance().getReference()
+                .child(FirebaseConstants.DATABASE_SHELTERS);
         ValueEventListener shelterQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                DashboardActivity.shelterMap = new HashMap<>();
+                ArrayList<Shelter> shelterList;
+                Log.i("a", "here");
+
                 if(!dataSnapshot.exists()) {
                     InputStream inputStream = getResources().openRawResource(R.raw.shelter);
-                    UtilityMethods.createShelterDatabase(inputStream);
+                    UtilityMethods.createShelterDatabase(inputStream, DashboardActivity.shelterMap);
+                } else {
+                    for (DataSnapshot shelterDataSnapshot : dataSnapshot.getChildren()) {
+                        Shelter shelter = shelterDataSnapshot.getValue(Shelter.class);
+                        DashboardActivity.shelterMap.put(shelter.getId(), shelter);
+                    }
                 }
+                shelterList = new ArrayList<>(shelterMap.values());
 
-                shelterList = new ArrayList<>();
-                for (DataSnapshot shelterDataSnapshot: dataSnapshot.getChildren()) {
-                    shelterList.add(shelterDataSnapshot.getValue(Shelter.class));
-                }
+                shelterList.sort(new Comparator<Shelter>() {
+                    @Override
+                    public int compare(Shelter shelter, Shelter t1) {
+                        return shelter.getName().compareTo(t1.getName());
+                    }
+                });
 
                 shelterAdapter = new ShelterAdapter(DashboardActivity.this, shelterList);
 
                 assert mListView != null;
                 mListView.setAdapter(shelterAdapter);
-                mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapter, View v, int position,
-                                            long arg3)
-                    {
-                        Shelter shelter = (Shelter) adapter.getItemAtPosition(position);
-                        Intent intent = new Intent(DashboardActivity.this, ShelterDetailActivity.class);
-                        intent.putExtra("ShelterData", shelter);
-                        startActivity(intent);
-                    }
-                });
-
-                // Add Text Change Listener to EditText
-                mEditTextView.addTextChangedListener(new TextWatcher() {
-
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        // Call back the Adapter with current character to Filter
-                        shelterAdapter.setSearchCategory((FilterCategories) mFilterCategories.getSelectedItem());
-                        shelterAdapter.getFilter().filter(s.toString());
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-
-                    }
-                });
 
                 mToastToShow.cancel();
                 showProgress(false);
@@ -146,11 +126,54 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.w("Firebase", "loadPost:onCancelled", databaseError.toException());
             }
         };
-        shelterQuery.addValueEventListener(shelterQueryEventListener);
+        shelterRef.addListenerForSingleValueEvent(shelterQueryEventListener);
+
+        // Add Text Change Listener to EditText
+        mEditTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Call back the Adapter with current character to Filter
+                shelterAdapter.setSearchCategory((FilterCategories) mFilterCategories.getSelectedItem());
+                shelterAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position,
+                                    long arg3)
+            {
+                Shelter shelter = (Shelter) adapter.getItemAtPosition(position);
+                Intent intent = new Intent(DashboardActivity.this, ShelterDetailActivity.class);
+                intent.putExtra("shelterId", shelter.getId());
+                startActivity(intent);
+            }
+        });
 
         ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, FilterCategories.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFilterCategories.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (ShelterDetailActivity.reservationMade) {
+            shelterAdapter.notifyDataSetChanged();
+            ShelterDetailActivity.reservationMade = false;
+        }
     }
 
     @Override
@@ -183,14 +206,23 @@ public class DashboardActivity extends AppCompatActivity {
 
         if (id == R.id.user_action) {
             if(DashboardActivity.currentUser == null) {
-                item.setEnabled(false);
-                item.getIcon().setAlpha(64);
-            } else {
-                item.setEnabled(true);
-                item.getIcon().setAlpha(255);
-
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-                final Shelter claimedShelter = currentUser.getClaimedShelter();
+
+                dlgAlert.setTitle("Hi!");
+                dlgAlert.setNegativeButton("LOGOUT",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut();
+                                finish();
+                            }
+                        });
+                dlgAlert.setMessage("We are still fetching your details. You may choose to logout.");
+                dlgAlert.create().show();
+
+            } else {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+                final Shelter claimedShelter =
+                        currentUser.getClaimedShelterId() == null ? null : shelterMap.get(currentUser.getClaimedShelterId());
                 String message;
 
                 dlgAlert.setTitle(String.format("Hi %s!", DashboardActivity.currentUser.getName()));
@@ -220,6 +252,7 @@ public class DashboardActivity extends AppCompatActivity {
 
                                 final Toast vacateSuccess = Toast.makeText(getApplicationContext(), "You have successful vacated your spot(s).", Toast.LENGTH_LONG);
                                 vacateSuccess.show();
+
                                 shelterAdapter.notifyDataSetChanged();
                             }
                         });
@@ -239,6 +272,14 @@ public class DashboardActivity extends AppCompatActivity {
                         claimedShelter != null);
             }
         } else if (id == R.id.map_action) {
+            if (DashboardActivity.shelterMap == null) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+
+                dlgAlert.setTitle("Hi!");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setMessage("We are still fetching shelter details.");
+                dlgAlert.create().show();
+            }
             startActivity(new Intent(this, MapsActivity.class));
         }
         return super.onOptionsItemSelected(item);

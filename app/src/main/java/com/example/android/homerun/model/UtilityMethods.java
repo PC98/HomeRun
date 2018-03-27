@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -61,7 +63,7 @@ public class UtilityMethods {
         return pat.matcher(name).matches();
     }
 
-    public static void createShelterDatabase(InputStream inputStream) {
+    public static void createShelterDatabase(InputStream inputStream, HashMap<String, Shelter> sheterMap) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             reader.readLine(); // Skip the first line
@@ -78,6 +80,7 @@ public class UtilityMethods {
                         Integer.parseInt(row[3]),
                         row[4], Double.parseDouble(row[5]), Double.parseDouble(row[6]), row[7],
                         row[8], row[9], AgeCategories.valueOf(row[10]), GenderCategories.valueOf(row[11]));
+                sheterMap.put(shelter.getId(), shelter);
                 FirebaseDatabase.getInstance().getReference()
                         .child(FirebaseConstants.DATABASE_SHELTERS)
                         .child(shelter.getId())
@@ -118,16 +121,16 @@ public class UtilityMethods {
         }
     }
 
-    public static void updateUser(User user, Shelter claimedShelter, String claimedSpots) {
+    public static void updateUser(User user, String claimedShelterId, String claimedSpots) {
 
-        user.setClaimedShelter(claimedShelter);
+        user.setClaimedShelterId(claimedShelterId);
         user.setClaimedSpots(claimedSpots);
 
         FirebaseDatabase.getInstance().getReference()
                 .child(FirebaseConstants.DATABASE_USERS)
                 .child(user.getId())
-                .child(FirebaseConstants.DATABASE_CLAIMED_SHELTER)
-                .setValue(user.getClaimedShelter());
+                .child(FirebaseConstants.DATABASE_CLAIMED_SHELTER_ID)
+                .setValue(user.getClaimedShelterId());
 
         FirebaseDatabase.getInstance().getReference()
                 .child(FirebaseConstants.DATABASE_USERS)
