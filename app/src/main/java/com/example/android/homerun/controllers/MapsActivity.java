@@ -1,5 +1,6 @@
 package com.example.android.homerun.controllers;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,12 +14,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-
 import java.util.ArrayList;
 
-
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -56,6 +54,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Marker shelMark = mMap.addMarker(new MarkerOptions().position(shelCoord).title("Marker in " + shelter.getName()).snippet("Phone: " + shelter.getPhoneNumber() + "\n" + "Capacity: " + shelter.getCapacityString()));
                 shelMark.setTag(shelter.getId());
             }
+        }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Integer tag = (Integer) marker.getTag();
+        if (tag != null) {
+            Intent intent = new Intent(MapsActivity.this, ShelterDetailActivity.class);
+            intent.putExtra("shelterId", tag);
+            startActivity(intent);
         }
     }
 }

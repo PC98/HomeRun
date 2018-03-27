@@ -92,7 +92,6 @@ public class DashboardActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DashboardActivity.shelterMap = new HashMap<>();
                 ArrayList<Shelter> shelterList;
-                Log.i("a", "here");
 
                 if(!dataSnapshot.exists()) {
                     InputStream inputStream = getResources().openRawResource(R.raw.shelter);
