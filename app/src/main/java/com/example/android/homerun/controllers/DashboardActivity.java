@@ -75,7 +75,7 @@ public class DashboardActivity extends AppCompatActivity {
         ValueEventListener userQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DashboardActivity.currentUser = (User) dataSnapshot.getValue(User.class);
+                currentUser = (User) dataSnapshot.getValue(User.class);
             }
 
             @Override
@@ -90,16 +90,16 @@ public class DashboardActivity extends AppCompatActivity {
         ValueEventListener shelterQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DashboardActivity.shelterMap = new HashMap<>();
+                shelterMap = new HashMap<>();
                 ArrayList<Shelter> shelterList;
 
                 if(!dataSnapshot.exists()) {
                     InputStream inputStream = getResources().openRawResource(R.raw.shelter);
-                    UtilityMethods.createShelterDatabase(inputStream, DashboardActivity.shelterMap);
+                    UtilityMethods.createShelterDatabase(inputStream, shelterMap);
                 } else {
                     for (DataSnapshot shelterDataSnapshot : dataSnapshot.getChildren()) {
                         Shelter shelter = shelterDataSnapshot.getValue(Shelter.class);
-                        DashboardActivity.shelterMap.put(shelter.getId(), shelter);
+                        shelterMap.put(shelter.getId(), shelter);
                     }
                 }
                 shelterList = new ArrayList<>(shelterMap.values());
@@ -204,7 +204,7 @@ public class DashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.user_action) {
-            if(DashboardActivity.currentUser == null) {
+            if(currentUser == null) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
 
                 dlgAlert.setTitle("Hi!");
@@ -224,12 +224,12 @@ public class DashboardActivity extends AppCompatActivity {
                         currentUser.getClaimedShelterId() == null ? null : shelterMap.get(currentUser.getClaimedShelterId());
                 String message;
 
-                dlgAlert.setTitle(String.format("Hi %s!", DashboardActivity.currentUser.getName()));
+                dlgAlert.setTitle(String.format("Hi %s!", currentUser.getName()));
 
                 if (claimedShelter == null) {
                     message = "You currently hold no spots.";
                 } else {
-                    String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
+                    String[] spots = currentUser.getClaimedSpots().split("/");
                     message = String.format("You currently hold %s %s spots at %s",
                             spots[1], spots[0], claimedShelter.getName());
                 }
@@ -237,8 +237,8 @@ public class DashboardActivity extends AppCompatActivity {
                 dlgAlert.setNeutralButton("VACATE SPOTS",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                String[] spots = DashboardActivity.currentUser.getClaimedSpots().split("/");
-                                UtilityMethods.updateUser(DashboardActivity.currentUser, null, null);
+                                String[] spots = currentUser.getClaimedSpots().split("/");
+                                UtilityMethods.updateUser(currentUser, null, null);
 
                                 if(spots[0].equalsIgnoreCase("family")) {
                                     UtilityMethods.updateShelter(claimedShelter,
@@ -271,7 +271,7 @@ public class DashboardActivity extends AppCompatActivity {
                         claimedShelter != null);
             }
         } else if (id == R.id.map_action) {
-            if (DashboardActivity.shelterMap == null) {
+            if (shelterMap == null) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
 
                 dlgAlert.setTitle("Hi!");

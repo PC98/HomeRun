@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private LatLng mAtlanta = new LatLng(33.753746, -84.386330);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +45,24 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWi
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         ArrayList<Shelter> shelterList = DashboardActivity.shelterAdapter.getShelters();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(33.753746, -84.386330), 11));
-        if (shelterList.size() == 0) {
-            Toast.makeText(this, "No Shelters to Show",
-                    Toast.LENGTH_SHORT).show();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, 11));
+        if (shelterList.isEmpty()) {
+            Toast.makeText(this, "No shelters to show!",
+                    Toast.LENGTH_LONG).show();
         } else {
             for (Shelter shelter : shelterList) {
                 LatLng shelCoord = new LatLng(shelter.getLatitude(), shelter.getLongitude());
-                Marker shelMark = mMap.addMarker(new MarkerOptions().position(shelCoord).title("Marker in " + shelter.getName()).snippet("Phone: " + shelter.getPhoneNumber() + "\n" + "Capacity: " + shelter.getCapacityString()));
+                Marker shelMark = mMap.addMarker(new MarkerOptions().position(shelCoord)
+                        .title(shelter.getName()).snippet("Phone: " + shelter.getPhoneNumber()));
                 shelMark.setTag(shelter.getId());
             }
         }
+        mMap.setOnInfoWindowClickListener(this);
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Integer tag = (Integer) marker.getTag();
+        String tag = (String) marker.getTag();
         if (tag != null) {
             Intent intent = new Intent(MapsActivity.this, ShelterDetailActivity.class);
             intent.putExtra("shelterId", tag);
