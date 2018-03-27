@@ -1,15 +1,28 @@
 package com.example.android.homerun.controllers;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.homerun.R;
+import com.example.android.homerun.model.Shelter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+
+import java.util.ArrayList;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -38,10 +51,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        ArrayList<Shelter> shelterList = DashboardActivity.shelterAdapter.getShelters();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(33.753746, -84.386330), 11));
+        if (shelterList.size() == 0) {
+            Toast.makeText(this, "No Shelters to Show",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            for (Shelter shelter : shelterList) {
+                LatLng shelCoord = new LatLng(shelter.getLatitude(), shelter.getLongitude());
+                Marker shelMark = mMap.addMarker(new MarkerOptions().position(shelCoord).title("Marker in " + shelter.getName()).snippet("Phone: " + shelter.getPhoneNumber() + "\n" + "Capacity: " + shelter.getCapacityString()));
+                shelMark.setTag(shelter.getId());
+            }
+        }
     }
 }

@@ -39,6 +39,10 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         this.filterCategory = FilterCategories.NAME;
     }
 
+    public ArrayList<Shelter> getShelters() {
+        return arrayList;
+    }
+
     public void setSearchCategory(FilterCategories searchCategory) { this.filterCategory = searchCategory;}
 
     @NonNull
