@@ -135,7 +135,10 @@ public class DashboardActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
                 Shelter newShelter = dataSnapshot.getValue(Shelter.class);
                 Shelter oldShelter = shelterMap.get(newShelter.getId());
-                oldShelter = newShelter;
+
+                oldShelter.setCurrentFamilyCapacity(newShelter.getCurrentFamilyCapacity());
+                oldShelter.setCurrentIndividualCapacity(newShelter.getCurrentIndividualCapacity());
+
                 shelterAdapter.notifyDataSetChanged();
 
             }
