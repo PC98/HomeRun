@@ -17,6 +17,7 @@ import com.example.android.homerun.model.User;
 import com.example.android.homerun.model.UtilityMethods;
 import com.example.android.homerun.view.ShelterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -126,6 +127,28 @@ public class DashboardActivity extends AppCompatActivity {
             }
         };
         shelterRef.addListenerForSingleValueEvent(shelterQueryEventListener);
+        shelterRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                Shelter newShelter = dataSnapshot.getValue(Shelter.class);
+                Shelter oldShelter = shelterMap.get(newShelter.getId());
+                oldShelter = newShelter;
+                shelterAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
 
         // Add Text Change Listener to EditText
         mEditTextView.addTextChangedListener(new TextWatcher() {
@@ -163,16 +186,6 @@ public class DashboardActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, FilterCategories.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFilterCategories.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (ShelterDetailActivity.reservationMade) {
-            shelterAdapter.notifyDataSetChanged();
-            ShelterDetailActivity.reservationMade = false;
-        }
     }
 
     @Override
@@ -251,8 +264,6 @@ public class DashboardActivity extends AppCompatActivity {
 
                                 final Toast vacateSuccess = Toast.makeText(getApplicationContext(), "You have successful vacated your spot(s).", Toast.LENGTH_LONG);
                                 vacateSuccess.show();
-
-                                shelterAdapter.notifyDataSetChanged();
                             }
                         });
 
