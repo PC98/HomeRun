@@ -13,6 +13,7 @@ public enum AccountType {
         type = s;
     }
 
+    @Override
     public String toString() {
         return this.type;
     }
