@@ -21,7 +21,6 @@ public class ShelterDetailActivity extends AppCompatActivity {
     private Integer shelterFamilyCapacity;
     private Integer shelterIndividualCapacity;
     private TextView shelter_capacity_widget;
-    public static boolean reservationMade = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +134,6 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             dialog.dismiss();
 
                             shelter_capacity_widget.setText("Capacity: " + current.getCapacityString());
-                            ShelterDetailActivity.reservationMade = true;
                         }
                     }
                 });
