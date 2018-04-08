@@ -14,12 +14,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import java.util.ArrayList;
+
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
 
-    private GoogleMap mMap;
-    private LatLng mAtlanta = new LatLng(33.753746, -84.386330);
+    private final LatLng mAtlanta = new LatLng(33.753746, -84.386330);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +43,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWi
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        ArrayList<Shelter> shelterList = DashboardActivity.shelterAdapter.getShelters();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, 11));
+        List<Shelter> shelterList = DashboardActivity.shelterAdapter.getShelters();
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, 11));
         if (shelterList.isEmpty()) {
             Toast.makeText(this, "No shelters to show!",
                     Toast.LENGTH_LONG).show();
         } else {
             for (Shelter shelter : shelterList) {
                 LatLng shelCoord = new LatLng(shelter.getLatitude(), shelter.getLongitude());
-                Marker shelMark = mMap.addMarker(new MarkerOptions().position(shelCoord)
+                Marker shelMark = googleMap.addMarker(new MarkerOptions().position(shelCoord)
                         .title(shelter.getName()).snippet("Phone: " + shelter.getPhoneNumber()));
                 shelMark.setTag(shelter.getId());
             }
         }
-        mMap.setOnInfoWindowClickListener(this);
+        googleMap.setOnInfoWindowClickListener(this);
     }
 
     @Override
