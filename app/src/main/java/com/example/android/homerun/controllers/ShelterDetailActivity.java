@@ -27,7 +27,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shelter_detail);
 
-        current = (Shelter) DashboardActivity.shelterMap.get(getIntent().getStringExtra("shelterId"));
+        current = DashboardActivity.shelterMap.get(getIntent().getStringExtra("shelterId"));
         currentUser = DashboardActivity.currentUser;
 
         setTitle(current.getName());
@@ -115,7 +115,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
                         } else {
                             // Assign Shelter to User (at least locally, for now)
                             String spotsData = "";
-                            if ((shelterType == 1) || (shelterType == 0 && spotsClaimed <= 2)) {
+                            if ((shelterType == 1) || ((shelterType == 0) && (spotsClaimed <= 2))) {
                                 spotsData += "individual/";
                                 UtilityMethods.updateShelter(current, null,
                                         current.getCurrentIndividualCapacity() - spotsClaimed);
