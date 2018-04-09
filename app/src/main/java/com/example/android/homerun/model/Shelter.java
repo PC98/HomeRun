@@ -1,11 +1,6 @@
 package com.example.android.homerun.model;
-import java.io.Serializable;
 
-/**
- * Created by PC on 2/25/18.
- */
-
-public class Shelter implements Serializable {
+public class Shelter {
     private String id;
     private String name;
     private String restrictions;
@@ -39,6 +34,14 @@ public class Shelter implements Serializable {
 
     public Integer getCurrentFamilyCapacity() {
         return currentFamilyCapacity;
+    }
+
+    public Integer getOriginalIndividualCapacity() {
+        return originalIndividualCapacity;
+    }
+
+    public Integer getOriginalFamilyCapacity() {
+        return originalFamilyCapacity;
     }
 
     public String getRestrictions() {

@@ -1,12 +1,12 @@
 package com.example.android.homerun.controllers;
 
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.app.AlertDialog;
 
 import com.example.android.homerun.R;
 import com.example.android.homerun.model.Shelter;
@@ -59,14 +59,16 @@ public class ShelterDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Can't book more than one shelter
                 if (currentUser.getClaimedShelterId() != null) {
-                    android.app.AlertDialog.Builder rebookError  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
+                    AlertDialog.Builder rebookError  = new AlertDialog.Builder(
+                            ShelterDetailActivity.this);
                     rebookError.setMessage("You have already reserved a shelter!");
                     rebookError.setTitle("Shelter Allowance Exceeded");
                     rebookError.setPositiveButton("OK", null);
                     rebookError.create().show();
                     return;
                 }
-                AlertDialog.Builder box = new AlertDialog.Builder(ShelterDetailActivity.this);
+                AlertDialog.Builder box = new AlertDialog.Builder(
+                        ShelterDetailActivity.this);
                 box.setTitle("How many spots would you like?");
                 String[] types;
                 shelterIndividualCapacity = current.getCurrentIndividualCapacity();
@@ -74,16 +76,20 @@ public class ShelterDetailActivity extends AppCompatActivity {
                 boolean isIndividual = shelterIndividualCapacity != null;
                 boolean isFamily =  shelterFamilyCapacity != null;
                 if (isIndividual && isFamily) {
-                    types = new String[]{"One Bed - Individual", "Two Beds - Individual", "Three Beds - Family", "Four Beds - Family"};
+                    types = new String[]{"One Bed - Individual", "Two Beds - Individual",
+                            "Three Beds - Family", "Four Beds - Family"};
                     shelterType = 0;
                 } else if (isIndividual) {
-                    types = new String[]{"One Bed - Individual", "Two Beds - Individual", "Three Beds - Individual", "Four Beds - Individual"};
+                    types = new String[]{"One Bed - Individual", "Two Beds - Individual",
+                            "Three Beds - Individual", "Four Beds - Individual"};
                     shelterType = 1;
                 } else if (isFamily) {
-                    types = new String[]{"One Bed - Family", "Two Beds - Family", "Three Beds - Family", "Four Beds - Family"};
+                    types = new String[]{"One Bed - Family", "Two Beds - Family",
+                            "Three Beds - Family", "Four Beds - Family"};
                     shelterType = 2;
                 } else {
-                    android.app.AlertDialog.Builder failure  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
+                    AlertDialog.Builder failure  = new AlertDialog.Builder(
+                            ShelterDetailActivity.this);
                     failure.setMessage("You cannot reserve spots at this shelter!");
                     failure.setTitle("Shelter Unsupported!");
                     failure.setPositiveButton("OK", null);
@@ -108,7 +114,8 @@ public class ShelterDetailActivity extends AppCompatActivity {
                         }
                         if (spotsClaimed > shelterCapacity) {
                             // Exceeding Shelter Capacity
-                            android.app.AlertDialog.Builder errorCap = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
+                            AlertDialog.Builder errorCap = new AlertDialog.Builder(
+                                    ShelterDetailActivity.this);
                             errorCap.setTitle("Shelter Capacity Exceeded");
                             errorCap.setMessage("Please Try Again!");
                             errorCap.setPositiveButton("OK", null);
@@ -128,7 +135,8 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             }
                             spotsData += spotsClaimed;
                             UtilityMethods.updateUser(currentUser, current.getId(), spotsData);
-                            android.app.AlertDialog.Builder success  = new android.app.AlertDialog.Builder(ShelterDetailActivity.this);
+                            AlertDialog.Builder success  = new AlertDialog.Builder(
+                                    ShelterDetailActivity.this);
                             success.setMessage("You have successfully reserved your spot(s)!");
                             success.setTitle("Success!");
                             success.setPositiveButton("OK", null);

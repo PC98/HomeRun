@@ -1,9 +1,5 @@
 package com.example.android.homerun.model;
 
-/**
- * Created by PC on 2/19/18.
- */
-
 public class User {
     private String name;
     private String username;
@@ -32,6 +28,7 @@ public class User {
     public String getId() {return id;}
     public String getClaimedShelterId() {return claimedShelterId;}
     public String getClaimedSpots() {return claimedSpots;}
+    public AccountType getAccountType() {return accountType;}
 
     public void setClaimedShelterId(String s) {this.claimedShelterId = s;}
     public void setClaimedSpots(String s) {this.claimedSpots = s;}

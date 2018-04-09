@@ -20,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import com.example.android.homerun.R;
 import com.example.android.homerun.model.AccountType;
@@ -48,35 +49,37 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         // Set up the login form.
-        mUsernameView = findViewById(R.id.regpage_username);
+        mUsernameView = findViewById(R.id.register_username);
         mNameView = findViewById(R.id.regpage_name);
         mPasswordView = findViewById(R.id.regpage_password);
         mAccountView = findViewById(R.id.user_admin_spinner);
 
-        Button cancelButton = findViewById(R.id.regpage_cancel_button);
+        Button cancelButton = findViewById(R.id.register_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
-        Button registerButton = findViewById(R.id.regpage_register_button);
+        Button registerButton = findViewById(R.id.register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptRegistration();
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
-        ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, AccountType.values());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SpinnerAdapter adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, AccountType.values());
         mAccountView.setAdapter(adapter);
 
         mRegisterFormView = findViewById(R.id.register_form);
@@ -144,15 +147,17 @@ public class RegistrationActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
 
-            final User user = new User(name, username, password, (AccountType)mAccountView.getSelectedItem());
-          
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.getUsername(), user.getPassword())
-                    .addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+            final User user = new User(name, username, password,
+                    (AccountType)mAccountView.getSelectedItem());
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.getUsername(),
+                    user.getPassword()).addOnCompleteListener(RegistrationActivity.this,
+                    new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             showProgress(false);
 
-                            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(RegistrationActivity.this);
+                            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(
+                                    RegistrationActivity.this);
 
                             if (task.isSuccessful()) {
                                 // Alert user and go to sign-in page
@@ -162,7 +167,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                 mPasswordView.setText("");
                                 mAccountView.setSelection(0);
 
-                                dlgAlert.setMessage("You have successfully registered. You will be logged in now.");
+                                dlgAlert.setMessage("You have successfully registered. You will" +
+                                        " be logged in now.");
                                 dlgAlert.setTitle("Registration Successful");
                                 dlgAlert.setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
@@ -179,7 +185,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                         .setValue(user);
                             } else {
                                 // Alert user
-                                Log.w("Firebase", "Registration failed." + task.getException().getMessage());
+                                Log.w("Firebase", "Registration failed." +
+                                        task.getException().getMessage());
                                 dlgAlert.setMessage("Something went wrong. Please try again.");
                                 dlgAlert.setTitle("Registration Failed");
                                 dlgAlert.setPositiveButton("OK", null);
