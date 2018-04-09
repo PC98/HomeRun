@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -33,36 +34,40 @@ public class UtilityMethods {
 
     public static boolean isEmailValid(String email) {
         Pattern pat = Pattern.compile(EMAIL_REGEX);
-        if (email == null)
-            return false;
-
-        return pat.matcher(email).matches();
+//        if (email == null)
+//            return false;
+//
+//        return pat.matcher(email).matches();
+        return email != null && pat.matcher(email).matches();
     }
 
     public static boolean isUsernameValid(String username) {
         Pattern pat = Pattern.compile(USERNAME_REGEX);
-        if (username == null)
-            return false;
-
-        return pat.matcher(username).matches();
+//        if (username == null)
+//            return false;
+//
+//        return pat.matcher(username).matches();
+        return username != null && pat.matcher(username).matches();
     }
 
     public static boolean isPasswordValid(String password) {
         Pattern pat = Pattern.compile(PASSWORD_REGEX);
-        if (password == null)
-            return false;
-
-        return pat.matcher(password).matches();
+//        if (password == null)
+//            return false;
+//
+//        return pat.matcher(password).matches();
+        return password != null && pat.matcher(password).matches();
     }
     public static boolean isNameValid(String name) {
         Pattern pat = Pattern.compile(NAME_REGEX);
-        if (name == null)
-            return false;
-
-        return pat.matcher(name).matches();
+//        if (name == null)
+//            return false;
+//
+//        return pat.matcher(name).matches();
+        return name != null && pat.matcher(name).matches();
     }
 
-    public static void createShelterDatabase(InputStream inputStream, HashMap<String, Shelter> sheterMap) {
+    public static void createShelterDatabase(InputStream inputStream, Map<String, Shelter> sheterMap) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             reader.readLine(); // Skip the first line

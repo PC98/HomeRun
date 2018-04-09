@@ -13,6 +13,8 @@ import com.example.android.homerun.model.Shelter;
 import com.example.android.homerun.model.User;
 import com.example.android.homerun.model.UtilityMethods;
 
+import static java.security.AccessController.getContext;
+
 
 public class ShelterDetailActivity extends AppCompatActivity {
     private Shelter current;
@@ -27,29 +29,29 @@ public class ShelterDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shelter_detail);
 
-        current = (Shelter) DashboardActivity.shelterMap.get(getIntent().getStringExtra("shelterId"));
+        current = DashboardActivity.shelterMap.get(getIntent().getStringExtra("shelterId"));
         currentUser = DashboardActivity.currentUser;
 
         setTitle(current.getName());
 
         shelter_capacity_widget = findViewById(R.id.shelter_detail_view_cap);
-        shelter_capacity_widget.setText("Capacity: " + current.getCapacityString());
+        shelter_capacity_widget.setText(getString(R.string.capacity, current.getCapacityString()));
 
         String restrictions = current.getRestrictions();
         TextView shelter_restrictions_widget = findViewById(R.id.shelter_detail_view_restrictions);
-        shelter_restrictions_widget.setText("Restricted to: " + restrictions);
+        shelter_restrictions_widget.setText(getString(R.string.restr, restrictions));
 
         String address = current.getAddress();
         TextView shelter_location_widget = findViewById(R.id.shelter_detail_view_location);
-        shelter_location_widget.setText("Location: " + address);
+        shelter_location_widget.setText(getString(R.string.loc, address));
 
         String phone_number = current.getPhoneNumber();
         TextView shelter_phone_widget = findViewById(R.id.shelter_detail_view_phone);
-        shelter_phone_widget.setText("Phone Number: " + phone_number);
+        shelter_phone_widget.setText(getString(R.string.phone, phone_number));
 
         String notes = current.getSpecialNotes();
         TextView shelter_notes_widget = findViewById(R.id.shelter_detail_view_notes);
-        shelter_notes_widget.setText("Special Notes: " + notes);
+        shelter_notes_widget.setText(getString(R.string.specNot, notes));
 
         Button reserveButton = findViewById(R.id.shelter_detail_view_reserve);
         reserveButton.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +135,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             success.create().show();
                             dialog.dismiss();
 
-                            shelter_capacity_widget.setText("Capacity: " + current.getCapacityString());
+                            shelter_capacity_widget.setText(getString(R.string.capacity, current.getCapacityString()));
                         }
                     }
                 });

@@ -8,7 +8,7 @@ public enum AgeCategories {
     FAMILIES_WITH_NEWBORNS ("Families with newborns"), CHILDREN ("Children"),
     YOUNG_ADULTS ("Young adults"), ANYONE ("Anyone");
 
-    private String type;
+    final private String type;
 
     AgeCategories(String s) {
         type = s;

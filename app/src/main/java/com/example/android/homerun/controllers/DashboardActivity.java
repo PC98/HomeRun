@@ -42,29 +42,30 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity {
 
     private View mProgressView;
     private ListView mListView;
-    private EditText mEditTextView;
     private Spinner mFilterCategories;
     private View mView;
     public static User currentUser;
-    public static HashMap<String, Shelter> shelterMap;
+    public static Map<String, Shelter> shelterMap;
     public static ShelterAdapter shelterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EditText mEditTextView;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
         setTitle("Shelters");
         String currentUserId = (String) getIntent().getSerializableExtra("userId");
         mProgressView = findViewById(R.id.dashboard_progress);
-        mListView = (ListView) findViewById(R.id.shelter_list);
-        mEditTextView = (EditText) findViewById(R.id.filter_string);
-        mFilterCategories = (Spinner) findViewById(R.id.filter_category_spinner);
+        mListView = findViewById(R.id.shelter_list);
+        mEditTextView = findViewById(R.id.filter_string);
+        mFilterCategories = findViewById(R.id.filter_category_spinner);
         mView = findViewById(R.id.filter_layout);
 
         final Toast mToastToShow = Toast.makeText(getApplicationContext(), "Login successful. Fetching Data.", Toast.LENGTH_LONG);
@@ -76,7 +77,7 @@ public class DashboardActivity extends AppCompatActivity {
         ValueEventListener userQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                currentUser = (User) dataSnapshot.getValue(User.class);
+                currentUser = dataSnapshot.getValue(User.class);
             }
 
             @Override
@@ -237,7 +238,7 @@ public class DashboardActivity extends AppCompatActivity {
             } else {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
                 final Shelter claimedShelter =
-                        currentUser.getClaimedShelterId() == null ? null : shelterMap.get(currentUser.getClaimedShelterId());
+                        (currentUser.getClaimedShelterId() == null) ? null : (shelterMap.get(currentUser.getClaimedShelterId()));
                 String message;
 
                 dlgAlert.setTitle(String.format("Hi %s!", currentUser.getName()));

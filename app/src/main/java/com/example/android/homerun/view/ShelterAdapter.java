@@ -20,6 +20,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
@@ -29,17 +30,17 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
 
-    private ArrayList<Shelter> arrayList;
-    private ArrayList<Shelter> originalList; // Original Values
+    final private List<Shelter> arrayList;
+    private List<Shelter> originalList; // Original Values
     private FilterCategories filterCategory;
 
-    public ShelterAdapter(Context context, ArrayList<Shelter> list) {
+    public ShelterAdapter(Context context, List<Shelter> list) {
         super(context, 0, list);
         this.arrayList = list;
         this.filterCategory = FilterCategories.NAME;
     }
 
-    public ArrayList<Shelter> getShelters() {
+    public List<Shelter> getShelters() {
         return arrayList;
     }
 
@@ -55,15 +56,15 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
         Shelter shelter = getItem(position);
 
-        TextView name = (TextView) listItemView.findViewById(R.id.shelter_name);
-        TextView capacity = (TextView) listItemView.findViewById(R.id.shelter_capacity);
-        TextView gender = (TextView) listItemView.findViewById(R.id.shelter_gender);
+        TextView name = listItemView.findViewById(R.id.shelter_name);
+        TextView capacity = listItemView.findViewById(R.id.shelter_capacity);
+        TextView gender = listItemView.findViewById(R.id.shelter_gender);
 
         assert shelter != null;
         name.setText(shelter.getName());
 
-        capacity.setText("Capacity: " + shelter.getCapacityString());
-        gender.setText("Restricted to: " + shelter.getRestrictions());
+        capacity.setText(getContext().getString(R.string.capacity, shelter.getCapacityString()));
+        gender.setText(getContext().getString(R.string.restr, shelter.getRestrictions()));
 
         return listItemView;
     }
@@ -83,19 +84,20 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
             @Override
             protected FilterResults performFiltering(final CharSequence constraint) {
                 final FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                final ArrayList<Shelter> filteredArrList = new ArrayList();
-
+                final List<Shelter> filteredArrList = new ArrayList();
+                final int GENDERFUZZYULIMIT = 90;
+                final int GENDERFUZZYLLIMIT = 45;
                 if (originalList == null) {
                     originalList = new ArrayList(arrayList); // saves the original data in mOriginalValues
                 }
 
-                /********
+                /*
                  *
                  *  If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
                  *  else does the Filtering and returns FilteredArrList(Filtered)
                  *
-                 ********/
-                if (constraint == null || constraint.length() == 0) {
+                 */
+                if ((constraint == null) || (constraint.length() == 0)) {
 
                     // set the Original result to return
                     results.count = originalList.size();
@@ -116,12 +118,12 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                                 data = originalList.get(i).getName().toLowerCase();
                         }
 
-                        if (filterCategory == FilterCategories.GENDER ?
+                        if ((filterCategory == FilterCategories.GENDER) ?
                                 (data.equals(GenderCategories.ANYONE.toString().toLowerCase())
                                         || data.startsWith(constraint_string) ||
-                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= 90) :
+                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= GENDERFUZZYULIMIT) :
                                 (data.contains(constraint_string) ||
-                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= 45)) {
+                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= GENDERFUZZYLLIMIT)) {
                             filteredArrList.add(originalList.get(i));
                         }
                     }
@@ -146,18 +148,18 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                                     s2_data = s2.getName().toLowerCase();
                             }
 
-                            if (filterCategory == FilterCategories.GENDER ?
+                            if ((filterCategory == FilterCategories.GENDER) ?
                                     s1_data.startsWith(constraint_string) :
                                     s1_data.contains(constraint_string)) {
 
-                                if (!(filterCategory == FilterCategories.GENDER ?
+                                if (!((filterCategory == FilterCategories.GENDER) ?
                                         s2_data.startsWith(constraint_string) :
                                         s2_data.contains(constraint_string))) {
                                     return -1;
                                 }
                                 return s1.getName().toLowerCase().compareTo(s2.getName().toLowerCase());
 
-                            } else if (filterCategory == FilterCategories.GENDER ?
+                            } else if ((filterCategory == FilterCategories.GENDER) ?
                                     s2_data.startsWith(constraint_string) :
                                     s2_data.contains(constraint_string)) {
                                 return 1;

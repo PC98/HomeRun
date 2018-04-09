@@ -7,7 +7,7 @@ package com.example.android.homerun.model;
 public enum GenderCategories {
     MALE ("Male"), FEMALE ("Female"), ANYONE ("Anyone");
 
-    private String type;
+    final private String type;
 
     GenderCategories(String s) {
         type = s;

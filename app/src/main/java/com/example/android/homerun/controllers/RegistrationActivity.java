@@ -54,14 +54,14 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         // Set up the login form.
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.regpage_username);
-        mNameView = (AutoCompleteTextView) findViewById(R.id.regpage_name);
+        mUsernameView = findViewById(R.id.regpage_username);
+        mNameView = findViewById(R.id.regpage_name);
         // TODO populateAutoComplete()
 
-        mPasswordView = (EditText) findViewById(R.id.regpage_password);
-        mAccountView = (Spinner) findViewById(R.id.user_admin_spinner);
+        mPasswordView = findViewById(R.id.regpage_password);
+        mAccountView = findViewById(R.id.user_admin_spinner);
 
-        Button cancelButton = (Button) findViewById(R.id.regpage_cancel_button);
+        Button cancelButton = findViewById(R.id.regpage_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +72,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        Button registerButton = (Button) findViewById(R.id.regpage_register_button);
+        Button registerButton = findViewById(R.id.regpage_register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -201,7 +201,7 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
-        private User user;
+        final private User user;
 
         UserRegisterTask(User user) {
             this.user = user;

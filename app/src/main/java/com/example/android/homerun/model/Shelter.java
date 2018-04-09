@@ -93,7 +93,7 @@ public class Shelter implements Serializable {
         if (currentFamilyCapacity != null) {
             capacityString += currentFamilyCapacity + " family spots";
         }
-        if (currentIndividualCapacity == null && currentFamilyCapacity == null) {
+        if ((currentIndividualCapacity == null) && (currentFamilyCapacity == null)) {
             capacityString += "N/A";
         }
         return capacityString;
