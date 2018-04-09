@@ -33,14 +33,6 @@ public class Shelter implements Serializable {
         return name;
     }
 
-    public Integer getOriginalIndividualCapacity() {
-        return originalIndividualCapacity;
-    }
-
-    public Integer getOriginalFamilyCapacity() {
-        return originalFamilyCapacity;
-    }
-
     public Integer getCurrentIndividualCapacity() {
         return currentIndividualCapacity;
     }
@@ -93,7 +85,7 @@ public class Shelter implements Serializable {
         if (currentFamilyCapacity != null) {
             capacityString += currentFamilyCapacity + " family spots";
         }
-        if (currentIndividualCapacity == null && currentFamilyCapacity == null) {
+        if ((currentIndividualCapacity == null) && (currentFamilyCapacity == null)) {
             capacityString += "N/A";
         }
         return capacityString;

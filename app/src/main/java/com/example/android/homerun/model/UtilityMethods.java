@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -31,38 +31,30 @@ public class UtilityMethods {
     // Letters from any language and some special characters:
     private static final String NAME_REGEX = "^[\\p{L} .'-]+$";
 
-    public static boolean isEmailValid(String email) {
+    public static boolean isEmailValid(CharSequence email) {
         Pattern pat = Pattern.compile(EMAIL_REGEX);
-        if (email == null)
-            return false;
+        return (email != null) && pat.matcher(email).matches();
 
-        return pat.matcher(email).matches();
     }
 
-    public static boolean isUsernameValid(String username) {
+    public static boolean isUsernameValid(CharSequence username) {
         Pattern pat = Pattern.compile(USERNAME_REGEX);
-        if (username == null)
-            return false;
+        return (username != null) && pat.matcher(username).matches();
 
-        return pat.matcher(username).matches();
     }
 
-    public static boolean isPasswordValid(String password) {
+    public static boolean isPasswordValid(CharSequence password) {
         Pattern pat = Pattern.compile(PASSWORD_REGEX);
-        if (password == null)
-            return false;
+        return (password != null) && pat.matcher(password).matches();
 
-        return pat.matcher(password).matches();
     }
-    public static boolean isNameValid(String name) {
+    public static boolean isNameValid(CharSequence name) {
         Pattern pat = Pattern.compile(NAME_REGEX);
-        if (name == null)
-            return false;
+        return (name != null) && pat.matcher(name).matches();
 
-        return pat.matcher(name).matches();
     }
 
-    public static void createShelterDatabase(InputStream inputStream, HashMap<String, Shelter> sheterMap) {
+    public static void createShelterDatabase(InputStream inputStream, Map<String, Shelter> sheterMap) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             reader.readLine(); // Skip the first line

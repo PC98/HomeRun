@@ -7,7 +7,7 @@ package com.example.android.homerun.model;
 public enum FilterCategories {
     NAME ("Name"), GENDER ("Gender"), AGE("Age");
 
-    private String type;
+    private final String type;
 
     FilterCategories(String s) {
         type = s;
