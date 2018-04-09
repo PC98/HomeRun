@@ -2,7 +2,6 @@ package com.example.android.homerun.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import com.example.android.homerun.model.FilterCategories;
 import com.example.android.homerun.model.GenderCategories;
 import com.example.android.homerun.model.Shelter;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +27,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
 
-    final private List<Shelter> arrayList;
+    private final ArrayList<Shelter> arrayList;
     private List<Shelter> originalList; // Original Values
     private FilterCategories filterCategory;
 
@@ -71,7 +68,7 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
     @Override
     public Filter getFilter() {
-        Filter filter = new Filter() {
+        return new Filter() {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -85,18 +82,14 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
             protected FilterResults performFiltering(final CharSequence constraint) {
                 final FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
                 final List<Shelter> filteredArrList = new ArrayList();
+              
                 final int GENDERFUZZYULIMIT = 90;
                 final int GENDERFUZZYLLIMIT = 45;
+              
                 if (originalList == null) {
                     originalList = new ArrayList(arrayList); // saves the original data in mOriginalValues
                 }
 
-                /*
-                 *
-                 *  If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
-                 *  else does the Filtering and returns FilteredArrList(Filtered)
-                 *
-                 */
                 if ((constraint == null) || (constraint.length() == 0)) {
 
                     // set the Original result to return
@@ -114,8 +107,11 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                             case GENDER:
                                 data = originalList.get(i).getGenderCategory().toString().toLowerCase();
                                 break;
-                            default:
+                            case NAME:
                                 data = originalList.get(i).getName().toLowerCase();
+                                break;
+                            default:
+                                data = "";
                         }
 
                         if ((filterCategory == FilterCategories.GENDER) ?
@@ -124,6 +120,7 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                                         FuzzySearch.tokenSetRatio(constraint_string, data) >= GENDERFUZZYULIMIT) :
                                 (data.contains(constraint_string) ||
                                         FuzzySearch.tokenSetRatio(constraint_string, data) >= GENDERFUZZYLLIMIT)) {
+
                             filteredArrList.add(originalList.get(i));
                         }
                     }
@@ -143,9 +140,13 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                                     s1_data = s1.getGenderCategory().toString().toLowerCase();
                                     s2_data = s2.getGenderCategory().toString().toLowerCase();
                                     break;
-                                default:
+                                case NAME:
                                     s1_data = s1.getName().toLowerCase();
                                     s2_data = s2.getName().toLowerCase();
+                                    break;
+                                default:
+                                    s1_data = "";
+                                    s2_data = "";
                             }
 
                             if ((filterCategory == FilterCategories.GENDER) ?
@@ -182,6 +183,5 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                 return results;
             }
         };
-        return filter;
     }
 }

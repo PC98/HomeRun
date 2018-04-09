@@ -33,14 +33,6 @@ public class Shelter implements Serializable {
         return name;
     }
 
-    public Integer getOriginalIndividualCapacity() {
-        return originalIndividualCapacity;
-    }
-
-    public Integer getOriginalFamilyCapacity() {
-        return originalFamilyCapacity;
-    }
-
     public Integer getCurrentIndividualCapacity() {
         return currentIndividualCapacity;
     }

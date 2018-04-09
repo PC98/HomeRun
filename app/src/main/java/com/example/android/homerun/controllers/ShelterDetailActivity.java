@@ -117,7 +117,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
                         } else {
                             // Assign Shelter to User (at least locally, for now)
                             String spotsData = "";
-                            if ((shelterType == 1) || (shelterType == 0 && spotsClaimed <= 2)) {
+                            if ((shelterType == 1) || ((shelterType == 0) && (spotsClaimed <= 2))) {
                                 spotsData += "individual/";
                                 UtilityMethods.updateShelter(current, null,
                                         current.getCurrentIndividualCapacity() - spotsClaimed);

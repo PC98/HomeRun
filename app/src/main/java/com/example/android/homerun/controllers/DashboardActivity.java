@@ -56,7 +56,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        EditText mEditTextView;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
@@ -64,9 +63,9 @@ public class DashboardActivity extends AppCompatActivity {
         String currentUserId = (String) getIntent().getSerializableExtra("userId");
         mProgressView = findViewById(R.id.dashboard_progress);
         mListView = findViewById(R.id.shelter_list);
-        mEditTextView = findViewById(R.id.filter_string);
         mFilterCategories = findViewById(R.id.filter_category_spinner);
         mView = findViewById(R.id.filter_layout);
+        EditText mEditTextView = findViewById(R.id.filter_string);
 
         final Toast mToastToShow = Toast.makeText(getApplicationContext(), "Login successful. Fetching Data.", Toast.LENGTH_LONG);
         mToastToShow.show();
@@ -200,6 +199,7 @@ public class DashboardActivity extends AppCompatActivity {
         dlgAlert.setTitle("Logout Confirmation");
         dlgAlert.setNegativeButton("LOGOUT",
                 new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
                         finish();
@@ -227,6 +227,7 @@ public class DashboardActivity extends AppCompatActivity {
                 dlgAlert.setTitle("Hi!");
                 dlgAlert.setNegativeButton("LOGOUT",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
                                 finish();
@@ -238,7 +239,7 @@ public class DashboardActivity extends AppCompatActivity {
             } else {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
                 final Shelter claimedShelter =
-                        (currentUser.getClaimedShelterId() == null) ? null : (shelterMap.get(currentUser.getClaimedShelterId()));
+                        (currentUser.getClaimedShelterId() == null) ? null : shelterMap.get(currentUser.getClaimedShelterId());
                 String message;
 
                 dlgAlert.setTitle(String.format("Hi %s!", currentUser.getName()));
@@ -253,11 +254,12 @@ public class DashboardActivity extends AppCompatActivity {
 
                 dlgAlert.setNeutralButton("VACATE SPOTS",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String[] spots = currentUser.getClaimedSpots().split("/");
                                 UtilityMethods.updateUser(currentUser, null, null);
 
-                                if(spots[0].equalsIgnoreCase("family")) {
+                                if("family".equalsIgnoreCase(spots[0])) {
                                     UtilityMethods.updateShelter(claimedShelter,
                                             claimedShelter.getCurrentFamilyCapacity() + Integer.parseInt(spots[1]),
                                             null);
@@ -273,6 +275,7 @@ public class DashboardActivity extends AppCompatActivity {
 
                 dlgAlert.setNegativeButton("LOGOUT",
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
                                 finish();
@@ -307,41 +310,33 @@ public class DashboardActivity extends AppCompatActivity {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mListView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mListView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mListView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mListView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mListView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            mView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mListView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 }
