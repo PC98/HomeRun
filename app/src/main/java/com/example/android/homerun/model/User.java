@@ -23,14 +23,12 @@ public class User {
         this.username = username;
         this.password = password;
         this.accountType = accountType;
-        this.claimedShelterId = null;
-        this.claimedSpots = null;
     }
 
     public String getName() {return name;}
     public String getUsername() {return username;}
     public String getPassword() {return password;}
-    public AccountType getAccountType() {return accountType;}
+
     public String getId() {return id;}
     public String getClaimedShelterId() {return claimedShelterId;}
     public String getClaimedSpots() {return claimedSpots;}

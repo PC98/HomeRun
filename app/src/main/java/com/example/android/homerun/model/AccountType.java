@@ -7,7 +7,7 @@ package com.example.android.homerun.model;
 public enum AccountType {
     USER ("User"), ADMIN ("Admin");
 
-    private String type;
+    private final String type;
 
     AccountType(String s) {
         type = s;

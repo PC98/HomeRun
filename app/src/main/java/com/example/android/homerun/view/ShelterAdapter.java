@@ -2,7 +2,6 @@ package com.example.android.homerun.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,9 @@ import com.example.android.homerun.model.FilterCategories;
 import com.example.android.homerun.model.GenderCategories;
 import com.example.android.homerun.model.Shelter;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
@@ -29,8 +27,8 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
 
-    private ArrayList<Shelter> arrayList;
-    private ArrayList<Shelter> originalList; // Original Values
+    private final ArrayList<Shelter> arrayList;
+    private List<Shelter> originalList; // Original Values
     private FilterCategories filterCategory;
 
     public ShelterAdapter(Context context, ArrayList<Shelter> list) {
@@ -39,7 +37,7 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         this.filterCategory = FilterCategories.NAME;
     }
 
-    public ArrayList<Shelter> getShelters() {
+    public List<Shelter> getShelters() {
         return arrayList;
     }
 
@@ -55,9 +53,9 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
         Shelter shelter = getItem(position);
 
-        TextView name = (TextView) listItemView.findViewById(R.id.shelter_name);
-        TextView capacity = (TextView) listItemView.findViewById(R.id.shelter_capacity);
-        TextView gender = (TextView) listItemView.findViewById(R.id.shelter_gender);
+        TextView name = listItemView.findViewById(R.id.shelter_name);
+        TextView capacity = listItemView.findViewById(R.id.shelter_capacity);
+        TextView gender = listItemView.findViewById(R.id.shelter_gender);
 
         assert shelter != null;
         name.setText(shelter.getName());
@@ -70,7 +68,7 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
     @Override
     public Filter getFilter() {
-        Filter filter = new Filter() {
+        return new Filter() {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -83,7 +81,7 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
             @Override
             protected FilterResults performFiltering(final CharSequence constraint) {
                 final FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                final ArrayList<Shelter> filteredArrList = new ArrayList();
+                final List<Shelter> filteredArrList = new ArrayList();
 
                 if (originalList == null) {
                     originalList = new ArrayList(arrayList); // saves the original data in mOriginalValues
@@ -95,7 +93,7 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                  *  else does the Filtering and returns FilteredArrList(Filtered)
                  *
                  ********/
-                if (constraint == null || constraint.length() == 0) {
+                if ((constraint == null) || (constraint.length() == 0)) {
 
                     // set the Original result to return
                     results.count = originalList.size();
@@ -112,16 +110,19 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                             case GENDER:
                                 data = originalList.get(i).getGenderCategory().toString().toLowerCase();
                                 break;
-                            default:
+                            case NAME:
                                 data = originalList.get(i).getName().toLowerCase();
+                                break;
+                            default:
+                                data = "";
                         }
 
-                        if (filterCategory == FilterCategories.GENDER ?
+                        if ((filterCategory == FilterCategories.GENDER) ?
                                 (data.equals(GenderCategories.ANYONE.toString().toLowerCase())
                                         || data.startsWith(constraint_string) ||
-                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= 90) :
+                                        (FuzzySearch.tokenSetRatio(constraint_string, data) >= 90)) :
                                 (data.contains(constraint_string) ||
-                                        FuzzySearch.tokenSetRatio(constraint_string, data) >= 45)) {
+                                        (FuzzySearch.tokenSetRatio(constraint_string, data) >= 45))) {
                             filteredArrList.add(originalList.get(i));
                         }
                     }
@@ -141,23 +142,27 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                                     s1_data = s1.getGenderCategory().toString().toLowerCase();
                                     s2_data = s2.getGenderCategory().toString().toLowerCase();
                                     break;
-                                default:
+                                case NAME:
                                     s1_data = s1.getName().toLowerCase();
                                     s2_data = s2.getName().toLowerCase();
+                                    break;
+                                default:
+                                    s1_data = "";
+                                    s2_data = "";
                             }
 
-                            if (filterCategory == FilterCategories.GENDER ?
+                            if ((filterCategory == FilterCategories.GENDER) ?
                                     s1_data.startsWith(constraint_string) :
                                     s1_data.contains(constraint_string)) {
 
-                                if (!(filterCategory == FilterCategories.GENDER ?
+                                if (!((filterCategory == FilterCategories.GENDER) ?
                                         s2_data.startsWith(constraint_string) :
                                         s2_data.contains(constraint_string))) {
                                     return -1;
                                 }
                                 return s1.getName().toLowerCase().compareTo(s2.getName().toLowerCase());
 
-                            } else if (filterCategory == FilterCategories.GENDER ?
+                            } else if ((filterCategory == FilterCategories.GENDER) ?
                                     s2_data.startsWith(constraint_string) :
                                     s2_data.contains(constraint_string)) {
                                 return 1;
@@ -180,6 +185,5 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                 return results;
             }
         };
-        return filter;
     }
 }
