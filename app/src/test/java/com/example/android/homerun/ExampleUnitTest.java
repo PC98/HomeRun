@@ -3,6 +3,7 @@ package com.example.android.homerun;
 import com.example.android.homerun.model.AgeCategories;
 import com.example.android.homerun.model.GenderCategories;
 import com.example.android.homerun.model.Shelter;
+import com.example.android.homerun.model.UtilityMethods;
 
 import org.junit.Test;
 
@@ -49,6 +50,35 @@ public class ExampleUnitTest {
                 null
         );
         assertEquals("N/A", testShelter.getCapacityString());
+    }
+
+    // Animesh Fatehpuria
+    @Test
+    public void testIsNameValid() {
+        // Test for empty string
+        assertEquals(false, UtilityMethods.isNameValid(""));
+        // Test for null string
+        assertEquals(false, UtilityMethods.isNameValid(null));
+        // Tests for strings that does not match NAME_REGEX
+        assertEquals(false, UtilityMethods.isNameValid("animesh123"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh@"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh~"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh!"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh#"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh$"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh%"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh^"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh&"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh*"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh("));
+        assertEquals(false, UtilityMethods.isNameValid("animesh_"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh)"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh+"));
+        // Tests for valid strings
+        assertEquals(true, UtilityMethods.isNameValid("animesh.fatehpuria"));
+        assertEquals(true, UtilityMethods.isNameValid("animesh fatehpuria"));
+        assertEquals(true, UtilityMethods.isNameValid(" animesh   fatehpuria "));
+        assertEquals(true, UtilityMethods.isNameValid("animesh français"));
     }
 
     /*
