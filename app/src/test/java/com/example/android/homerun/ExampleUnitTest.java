@@ -3,6 +3,7 @@ package com.example.android.homerun;
 import com.example.android.homerun.model.AgeCategories;
 import com.example.android.homerun.model.GenderCategories;
 import com.example.android.homerun.model.Shelter;
+import com.example.android.homerun.model.UtilityMethods;
 
 import org.junit.Test;
 
@@ -53,6 +54,36 @@ public class ExampleUnitTest {
                 "No special notes", "1234561234",
                 AgeCategories.ANYONE, GenderCategories.ANYONE);
         assertEquals("N/A", testShelter.getCapacityString());
+    }
+
+    @Test
+    public void isEmalValidNullCheck() {
+        String testEmail = null;
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_nocom() {
+        String testEmail = "test@gmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_noAt() {
+        String testEmail = "testgmail.com";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_notEmail() {
+        String testEmail = "notAnEmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValid_validEmail() {
+        String testEmail = "test@email.com";
+        assertEquals(true, UtilityMethods.isEmailValid(testEmail));
     }
 
     /*
