@@ -3,7 +3,9 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=15:2F:98:D2:CA:37:A0:80:8A:25:AA:54:CD:FB:34:18:FD:7B:C1:C6%3Bcom.example.android.homerun.model
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=
+    CLIENT_SIDE_ANDROID&r=15:2F:98:D2:CA:37:A0:80:8A:25:AA:54:CD:FB:34:18:FD:7B:C1:C6%3Bcom.example.
+    android.homerun.model
 
     You can also add your credentials to an existing key, using these values:
 
@@ -19,5 +21,6 @@
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAnLTBD4z_YV7c1K53J7zh2Zbcd94PWsys</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyAnLTBD4z_YV7c1K53J7zh2Zbcd94PWsys</string>
 </resources>

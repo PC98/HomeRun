@@ -36,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -67,7 +68,8 @@ public class DashboardActivity extends AppCompatActivity {
         mFilterCategories = findViewById(R.id.filter_category_spinner);
         mView = findViewById(R.id.filter_layout);
 
-        final Toast mToastToShow = Toast.makeText(getApplicationContext(), "Login successful. Fetching Data.", Toast.LENGTH_LONG);
+        final Toast mToastToShow = Toast.makeText(getApplicationContext(),
+                "Login successful. Fetching Data.", Toast.LENGTH_LONG);
         mToastToShow.show();
         showProgress(true);
 
@@ -164,7 +166,8 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Call back the Adapter with current character to Filter
-                shelterAdapter.setSearchCategory((FilterCategories) mFilterCategories.getSelectedItem());
+                shelterAdapter.setSearchCategory((FilterCategories)
+                        mFilterCategories.getSelectedItem());
                 shelterAdapter.getFilter().filter(s.toString());
             }
 
@@ -186,8 +189,8 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter<String> adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, FilterCategories.values());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SpinnerAdapter adapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item, FilterCategories.values());
         mFilterCategories.setAdapter(adapter);
     }
 
@@ -233,13 +236,14 @@ public class DashboardActivity extends AppCompatActivity {
                                 finish();
                             }
                         });
-                dlgAlert.setMessage("We are still fetching your details. You may choose to logout.");
+                dlgAlert.setMessage("We are still fetching your details. " +
+                        "You may choose to logout.");
                 dlgAlert.create().show();
 
             } else {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-                final Shelter claimedShelter =
-                        (currentUser.getClaimedShelterId() == null) ? null : shelterMap.get(currentUser.getClaimedShelterId());
+                final Shelter claimedShelter = (currentUser.getClaimedShelterId() == null) ? null :
+                                shelterMap.get(currentUser.getClaimedShelterId());
                 String message;
 
                 dlgAlert.setTitle(String.format("Hi %s!", currentUser.getName()));
@@ -261,14 +265,17 @@ public class DashboardActivity extends AppCompatActivity {
 
                                 if("family".equalsIgnoreCase(spots[0])) {
                                     UtilityMethods.updateShelter(claimedShelter,
-                                            claimedShelter.getCurrentFamilyCapacity() + Integer.parseInt(spots[1]),
-                                            null);
+                                            claimedShelter.
+                                                    getCurrentFamilyCapacity() +
+                                                    Integer.parseInt(spots[1]), null);
                                 } else {
                                     UtilityMethods.updateShelter(claimedShelter, null,
-                                            claimedShelter.getCurrentIndividualCapacity() + Integer.parseInt(spots[1]));
+                                            claimedShelter.getCurrentIndividualCapacity()
+                                                    + Integer.parseInt(spots[1]));
                                 }
 
-                                final Toast vacateSuccess = Toast.makeText(getApplicationContext(), "You have successful vacated your spot(s).", Toast.LENGTH_LONG);
+                                final Toast vacateSuccess = Toast.makeText(getApplicationContext(),
+                                        "You have successful vacated your spot(s).", Toast.LENGTH_LONG);
                                 vacateSuccess.show();
                             }
                         });

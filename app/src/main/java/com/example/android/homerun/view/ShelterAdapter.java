@@ -21,10 +21,6 @@ import java.util.List;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
-/**
- * Created by PC on 2/27/18.
- */
-
 public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
 
     private final ArrayList<Shelter> arrayList;
@@ -41,14 +37,17 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         return arrayList;
     }
 
-    public void setSearchCategory(FilterCategories searchCategory) { this.filterCategory = searchCategory;}
+    public void setSearchCategory(FilterCategories searchCategory) {
+        this.filterCategory = searchCategory;
+    }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
         if(listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.shelter_list_item, parent, false);
+            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.shelter_list_item,
+                    parent, false);
         }
 
         Shelter shelter = getItem(position);
@@ -80,19 +79,13 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
             @Override
             protected FilterResults performFiltering(final CharSequence constraint) {
-                final FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                final List<Shelter> filteredArrList = new ArrayList();
+                final FilterResults results = new FilterResults();
+                final List<Shelter> filteredArrList = new ArrayList<>();
 
                 if (originalList == null) {
-                    originalList = new ArrayList(arrayList); // saves the original data in mOriginalValues
+                    originalList = new ArrayList<>(arrayList);
                 }
 
-                /********
-                 *
-                 *  If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
-                 *  else does the Filtering and returns FilteredArrList(Filtered)
-                 *
-                 ********/
                 if ((constraint == null) || (constraint.length() == 0)) {
 
                     // set the Original result to return
@@ -105,10 +98,12 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                         String data;
                         switch (filterCategory) {
                             case AGE:
-                                data = originalList.get(i).getAgeCategory().toString().toLowerCase();
+                                data = originalList.get(i).getAgeCategory().toString()
+                                        .toLowerCase();
                                 break;
                             case GENDER:
-                                data = originalList.get(i).getGenderCategory().toString().toLowerCase();
+                                data = originalList.get(i).getGenderCategory().toString()
+                                        .toLowerCase();
                                 break;
                             case NAME:
                                 data = originalList.get(i).getName().toLowerCase();
@@ -119,10 +114,10 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
                         if ((filterCategory == FilterCategories.GENDER) ?
                                 (data.equals(GenderCategories.ANYONE.toString().toLowerCase())
-                                        || data.startsWith(constraint_string) ||
-                                        (FuzzySearch.tokenSetRatio(constraint_string, data) >= 90)) :
-                                (data.contains(constraint_string) ||
-                                        (FuzzySearch.tokenSetRatio(constraint_string, data) >= 45))) {
+                                        || data.startsWith(constraint_string) || (FuzzySearch
+                                        .tokenSetRatio(constraint_string, data) >= 90)) :
+                                (data.contains(constraint_string) || (FuzzySearch
+                                        .tokenSetRatio(constraint_string, data) >= 45))) {
                             filteredArrList.add(originalList.get(i));
                         }
                     }
@@ -160,7 +155,8 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                                         s2_data.contains(constraint_string))) {
                                     return -1;
                                 }
-                                return s1.getName().toLowerCase().compareTo(s2.getName().toLowerCase());
+                                return s1.getName().toLowerCase().compareTo(s2.getName()
+                                        .toLowerCase());
 
                             } else if ((filterCategory == FilterCategories.GENDER) ?
                                     s2_data.startsWith(constraint_string) :
@@ -171,7 +167,8 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                             int diff = FuzzySearch.tokenSetRatio(constraint_string, s2_data) -
                                     FuzzySearch.tokenSetRatio(constraint_string, s1_data);
                             if (diff == 0) {
-                                return s1.getName().toLowerCase().compareTo(s2.getName().toLowerCase());
+                                return s1.getName().toLowerCase().compareTo(s2.getName()
+                                        .toLowerCase());
                             }
 
                             return diff;

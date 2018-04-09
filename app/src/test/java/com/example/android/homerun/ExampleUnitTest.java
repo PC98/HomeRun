@@ -3,6 +3,7 @@ package com.example.android.homerun;
 import com.example.android.homerun.model.AgeCategories;
 import com.example.android.homerun.model.GenderCategories;
 import com.example.android.homerun.model.Shelter;
+import com.example.android.homerun.model.UtilityMethods;
 
 import org.junit.Test;
 
@@ -14,11 +15,16 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
 
+    /**
+     * Unit tests for getCapacityString() in Shelter.java.
+     * @author Lauren
+     */
     @Test
     public void shelterCapacityWithNoNullValues_isCorrect() {
         Shelter testShelter = createShelterForTesting(0,
@@ -28,7 +34,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void shelterCapcaityWithNullFamilyValue_isCorrect() {
+    public void shelterCapacityWithNullFamilyValue_isCorrect() {
         Shelter testShelter = createShelterForTesting(0,
                 null
         );
@@ -36,7 +42,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void shelterCapcaityWithNullIndividualShelterValue_isCorrect() {
+    public void shelterCapacityWithNullIndividualShelterValue_isCorrect() {
         Shelter testShelter = createShelterForTesting(null,
                 0
         );
@@ -44,17 +50,13 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void shelterCapcaityWithBothNull_isCorrect() {
+    public void shelterCapacityWithBothNull_isCorrect() {
         Shelter testShelter = createShelterForTesting(null,
                 null
         );
         assertEquals("N/A", testShelter.getCapacityString());
     }
 
-    /*
-     * This method is used for any tests that need a Shelter. It creates a new
-     * shelter each time with the given parameters.
-     */
     private Shelter createShelterForTesting(Integer originalIndividualCapacity,
                                             Integer originalFamilyCapacity) {
         return (new Shelter("1",
@@ -69,5 +71,30 @@ public class ExampleUnitTest {
                 "1234561234",
                 AgeCategories.ANYONE,
                 GenderCategories.ANYONE));
+    }
+
+    @Test
+    public void test_isUsernameValid() {
+        // Can't have null or empty username
+        assertEquals(false, UtilityMethods.isUsernameValid(null));
+        assertEquals(false, UtilityMethods.isUsernameValid(""));
+
+        // No spaces either
+        assertEquals(false, UtilityMethods.isUsernameValid(" "));
+        assertEquals(false, UtilityMethods.isUsernameValid("abc "));
+        assertEquals(false, UtilityMethods.isUsernameValid(" abc"));
+        assertEquals(false, UtilityMethods.isUsernameValid("a bc"));
+
+        // No special characters (except email accepted characters)
+        assertEquals(false, UtilityMethods.isUsernameValid("@"));
+        assertEquals(false, UtilityMethods.isUsernameValid("$"));
+        assertEquals(false, UtilityMethods.isUsernameValid("?"));
+        assertEquals(false, UtilityMethods.isUsernameValid("!#%^&*"));
+
+        // Allow alphanumeric and email accepted characters:
+        assertEquals(true, UtilityMethods.isUsernameValid("pchawla"));
+        assertEquals(true, UtilityMethods.isUsernameValid("pchawla8"));
+        assertEquals(true, UtilityMethods.isUsernameValid("213adasd"));
+        assertEquals(true, UtilityMethods.isUsernameValid("prabhav_chawla22"));
     }
 }

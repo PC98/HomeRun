@@ -66,7 +66,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 attemptLogin();
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -77,7 +78,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -90,7 +92,8 @@ public class LoginActivity extends AppCompatActivity {
                 mPasswordView.setText("");
                 mPasswordView.clearFocus();
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -179,12 +182,14 @@ public class LoginActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
             FirebaseAuth.getInstance().signInWithEmailAndPassword(username, password)
-                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    .addOnCompleteListener(LoginActivity.this,
+                            new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                LoginActivity.this.launchDashboardActivity(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                LoginActivity.this.launchDashboardActivity(FirebaseAuth
+                                        .getInstance().getCurrentUser().getUid());
                             } else {
                                 showProgress(false);
                                 // If username and/or password mismatches, display an error dialog.
@@ -192,7 +197,8 @@ public class LoginActivity extends AppCompatActivity {
                                 mPasswordView.setText("");
 
                                 mUsernameView.requestFocus();
-                                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(LoginActivity.this);
+                                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(
+                                        LoginActivity.this);
 
                                 dlgAlert.setMessage("Wrong Password or Username");
                                 dlgAlert.setTitle("Invalid Credentials");
