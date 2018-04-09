@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
         showProgress(false);
     }
-
+  
     private void launchDashboardActivity(String userId) {
         Intent intent = new Intent(this, DashboardActivity.class);
         intent.putExtra("userId", userId);

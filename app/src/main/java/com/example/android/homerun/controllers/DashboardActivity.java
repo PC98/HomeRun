@@ -64,9 +64,9 @@ public class DashboardActivity extends AppCompatActivity {
         String currentUserId = (String) getIntent().getSerializableExtra("userId");
         mProgressView = findViewById(R.id.dashboard_progress);
         mListView = findViewById(R.id.shelter_list);
-        EditText mEditTextView = findViewById(R.id.filter_string);
         mFilterCategories = findViewById(R.id.filter_category_spinner);
         mView = findViewById(R.id.filter_layout);
+        EditText mEditTextView = findViewById(R.id.filter_string);
 
         final Toast mToastToShow = Toast.makeText(getApplicationContext(),
                 "Login successful. Fetching Data.", Toast.LENGTH_LONG);

@@ -27,7 +27,7 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
     private List<Shelter> originalList; // Original Values
     private FilterCategories filterCategory;
 
-    public ShelterAdapter(Context context, ArrayList<Shelter> list) {
+    public ShelterAdapter(Context context, List<Shelter> list) {
         super(context, 0, list);
         this.arrayList = list;
         this.filterCategory = FilterCategories.NAME;
@@ -59,8 +59,8 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         assert shelter != null;
         name.setText(shelter.getName());
 
-        capacity.setText("Capacity: " + shelter.getCapacityString());
-        gender.setText("Restricted to: " + shelter.getRestrictions());
+        capacity.setText(getContext().getString(R.string.capacity, shelter.getCapacityString()));
+        gender.setText(getContext().getString(R.string.restr, shelter.getRestrictions()));
 
         return listItemView;
     }
@@ -79,9 +79,12 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
             @Override
             protected FilterResults performFiltering(final CharSequence constraint) {
-                final FilterResults results = new FilterResults();
-                final List<Shelter> filteredArrList = new ArrayList<>();
-
+                final FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
+                final List<Shelter> filteredArrList = new ArrayList();
+              
+                final int GENDERFUZZYULIMIT = 90;
+                final int GENDERFUZZYLLIMIT = 45;
+              
                 if (originalList == null) {
                     originalList = new ArrayList<>(arrayList);
                 }
@@ -115,9 +118,10 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
                         if ((filterCategory == FilterCategories.GENDER) ?
                                 (data.equals(GenderCategories.ANYONE.toString().toLowerCase())
                                         || data.startsWith(constraint_string) || (FuzzySearch
-                                        .tokenSetRatio(constraint_string, data) >= 90)) :
+                                        .tokenSetRatio(constraint_string, data) >= GENDERFUZZYULIMIT)) :
                                 (data.contains(constraint_string) || (FuzzySearch
-                                        .tokenSetRatio(constraint_string, data) >= 45))) {
+                                        .tokenSetRatio(constraint_string, data) >= GENDERFUZZYLLIMIT))) {
+                          
                             filteredArrList.add(originalList.get(i));
                         }
                     }

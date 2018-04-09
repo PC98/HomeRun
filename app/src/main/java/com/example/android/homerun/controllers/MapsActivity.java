@@ -14,13 +14,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener,
-        OnMapReadyCallback {
+          OnMapReadyCallback {
+    private final double ATL_LAT = 33.753746;
+    private final double ATL_LONG = -84.386330;
+    private final int ATL_ZOOM = 11;
 
-    private final LatLng mAtlanta = new LatLng(33.753746, -84.386330);
+    private LatLng mAtlanta = new LatLng(ATL_LAT, ATL_LONG);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWi
     @Override
     public void onMapReady(GoogleMap googleMap) {
         List<Shelter> shelterList = DashboardActivity.shelterAdapter.getShelters();
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, 11));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, ATL_ZOOM));
+      
         if (shelterList.isEmpty()) {
             Toast.makeText(this, "No shelters to show!",
                     Toast.LENGTH_LONG).show();

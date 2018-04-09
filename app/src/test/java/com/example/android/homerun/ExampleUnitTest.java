@@ -57,6 +57,68 @@ public class ExampleUnitTest {
         assertEquals("N/A", testShelter.getCapacityString());
     }
 
+    @Test
+    public void isEmalValidNullCheck() {
+        String testEmail = null;
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_nocom() {
+        String testEmail = "test@gmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_noAt() {
+        String testEmail = "testgmail.com";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_notEmail() {
+        String testEmail = "notAnEmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValid_validEmail() {
+        String testEmail = "test@email.com";
+        assertEquals(true, UtilityMethods.isEmailValid(testEmail));
+    }
+  
+    @Test
+    public void testIsNameValid() {
+        // Test for empty string
+        assertEquals(false, UtilityMethods.isNameValid(""));
+        // Test for null string
+        assertEquals(false, UtilityMethods.isNameValid(null));
+        // Tests for strings that does not match NAME_REGEX
+        assertEquals(false, UtilityMethods.isNameValid("animesh123"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh@"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh~"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh!"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh#"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh$"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh%"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh^"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh&"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh*"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh("));
+        assertEquals(false, UtilityMethods.isNameValid("animesh_"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh)"));
+        assertEquals(false, UtilityMethods.isNameValid("animesh+"));
+        // Tests for valid strings
+        assertEquals(true, UtilityMethods.isNameValid("animesh.fatehpuria"));
+        assertEquals(true, UtilityMethods.isNameValid("animesh fatehpuria"));
+        assertEquals(true, UtilityMethods.isNameValid(" animesh   fatehpuria "));
+        assertEquals(true, UtilityMethods.isNameValid("animesh français"));
+    }
+
+    /*
+     * This method is used for any tests that need a Shelter. It creates a new
+     * shelter each time with the given parameters.
+     */
     private Shelter createShelterForTesting(Integer originalIndividualCapacity,
                                             Integer originalFamilyCapacity) {
         return (new Shelter("1",
