@@ -50,7 +50,6 @@ public class RegistrationActivity extends AppCompatActivity {
         // Set up the login form.
         mUsernameView = findViewById(R.id.regpage_username);
         mNameView = findViewById(R.id.regpage_name);
-
         mPasswordView = findViewById(R.id.regpage_password);
         mAccountView = findViewById(R.id.user_admin_spinner);
 
@@ -144,7 +143,9 @@ public class RegistrationActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
             final User user = new User(name, username, password, (AccountType)mAccountView.getSelectedItem());
+          
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.getUsername(), user.getPassword())
                     .addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override

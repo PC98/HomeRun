@@ -52,7 +52,36 @@ public class ExampleUnitTest {
         assertEquals("N/A", testShelter.getCapacityString());
     }
 
-    // Animesh Fatehpuria
+    @Test
+    public void isEmalValidNullCheck() {
+        String testEmail = null;
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_nocom() {
+        String testEmail = "test@gmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_noAt() {
+        String testEmail = "testgmail.com";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValidInvalidEmail_notEmail() {
+        String testEmail = "notAnEmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmalValid_validEmail() {
+        String testEmail = "test@email.com";
+        assertEquals(true, UtilityMethods.isEmailValid(testEmail));
+    }
+  
     @Test
     public void testIsNameValid() {
         // Test for empty string

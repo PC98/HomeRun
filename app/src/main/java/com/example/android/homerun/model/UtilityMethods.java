@@ -34,24 +34,20 @@ public class UtilityMethods {
     public static boolean isEmailValid(CharSequence email) {
         Pattern pat = Pattern.compile(EMAIL_REGEX);
         return (email != null) && pat.matcher(email).matches();
-
     }
 
     public static boolean isUsernameValid(CharSequence username) {
         Pattern pat = Pattern.compile(USERNAME_REGEX);
         return (username != null) && pat.matcher(username).matches();
-
     }
 
     public static boolean isPasswordValid(CharSequence password) {
         Pattern pat = Pattern.compile(PASSWORD_REGEX);
         return (password != null) && pat.matcher(password).matches();
-
     }
     public static boolean isNameValid(CharSequence name) {
         Pattern pat = Pattern.compile(NAME_REGEX);
         return (name != null) && pat.matcher(name).matches();
-
     }
 
     public static void createShelterDatabase(InputStream inputStream, Map<String, Shelter> sheterMap) {
