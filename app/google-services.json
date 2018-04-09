@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "625307945506",
+    "firebase_url": "https://homerun-b3b89.firebaseio.com",
+    "project_id": "homerun-b3b89",
+    "storage_bucket": "homerun-b3b89.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625307945506:android:8e5d8e0c93ec870c",
+        "android_client_info": {
+          "package_name": "com.example.android.homerun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625307945506-3u648qca83o136pbom27vrfhlidkm0if.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.homerun",
+            "certificate_hash": "152f98d2ca37a0808a25aa54cdfb3418fd7bc1c6"
+          }
+        },
+        {
+          "client_id": "625307945506-hf6vusprmtdo20e44tjd77qatamhchp5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnLTBD4z_YV7c1K53J7zh2Zbcd94PWsys"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625307945506-hf6vusprmtdo20e44tjd77qatamhchp5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

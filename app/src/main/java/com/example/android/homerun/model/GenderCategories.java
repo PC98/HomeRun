@@ -1,19 +1,18 @@
 package com.example.android.homerun.model;
 
 /**
- * Created by PC on 2/19/18.
+ * Created by PC on 3/4/18.
  */
 
-public enum AccountType {
-    USER ("User"), ADMIN ("Admin");
+public enum GenderCategories {
+    MALE ("Male"), FEMALE ("Female"), ANYONE ("Anyone");
 
     private String type;
 
-    AccountType(String s) {
+    GenderCategories(String s) {
         type = s;
     }
 
-    @Override
     public String toString() {
         return this.type;
     }

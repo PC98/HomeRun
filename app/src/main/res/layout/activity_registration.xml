@@ -46,7 +46,6 @@
                         android:id="@+id/regpage_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/Name"
                         android:inputType="text"
                         android:maxLines="1"
@@ -62,7 +61,6 @@
                         android:id="@+id/regpage_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/Username"
                         android:inputType="text"
                         android:maxLines="1"
@@ -78,7 +76,6 @@
                         android:id="@+id/regpage_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/password"
                         android:inputType="textPassword"
                         android:maxLines="1"
@@ -90,20 +87,19 @@
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:text="@string/choose_account_type" />
 
                 <Spinner
                     android:id="@+id/user_admin_spinner"
                     android:layout_width="match_parent"
-                    android:layout_height="42dp"
-                    android:layout_margin="10dp" />
+                    android:layout_height="42dp" />
 
                 <Button
                     android:id="@+id/regpage_register_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/action_register"
                     android:textStyle="bold" />
@@ -113,7 +109,6 @@
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_marginTop="16dp"
                     android:backgroundTint="@android:color/holo_red_light"
                     android:text="@android:string/cancel"

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:layout_centerVertical="true"
+android:padding="16dp" >
+
+<TextView
+    android:id="@+id/shelter_detail_view_cap"
+    style="@style/detail"/>
+
+<TextView
+    android:id="@+id/shelter_detail_view_restrictions"
+    android:layout_marginTop="20dp"
+    style="@style/detail"/>
+
+<TextView
+    android:id="@+id/shelter_detail_view_location"
+    android:layout_marginTop="20dp"
+    style="@style/detail"/>
+
+<TextView
+    android:id="@+id/shelter_detail_view_phone"
+    android:layout_marginTop="20dp"
+    style="@style/detail"/>
+
+<TextView
+    android:id="@+id/shelter_detail_view_notes"
+    android:layout_marginTop="20dp"
+    style="@style/detail"/>
+
+<Button
+    android:id="@+id/shelter_detail_view_reserve"
+    android:layout_marginTop="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/holo_purple"
+    android:text="@string/reserve_a_spot"
+    android:textStyle="bold" />
+</LinearLayout>

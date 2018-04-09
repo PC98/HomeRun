@@ -1,15 +1,15 @@
 package com.example.android.homerun.model;
 
 /**
- * Created by PC on 2/19/18.
+ * Created by PC on 3/4/18.
  */
 
-public enum AccountType {
-    USER ("User"), ADMIN ("Admin");
+public enum FilterCategories {
+    NAME ("Name"), GENDER ("Gender"), AGE("Age");
 
     private String type;
 
-    AccountType(String s) {
+    FilterCategories(String s) {
         type = s;
     }
 
