@@ -84,4 +84,19 @@ public class ExampleUnitTest {
                             ageCategory,
                             genderCategory));
     }
+    @Test
+    public void PasswordIsNull() {
+        Charsequence testPassword = null;
+        assertEquals(false, isPasswordValid(testPassword));
+    }
+    @Test
+    public void PasswordIsNotValid() {
+        Charsequence testPassword = "pass";
+        assertEquals(false, isPasswordValid(testPassword));
+    }
+    @Test
+    public void PasswordIsValid() {
+        Charsequence testPassword = "Lifeofpablo4";
+        assertEquals(true, isPasswordValid(testPassword));
+    }
 }
