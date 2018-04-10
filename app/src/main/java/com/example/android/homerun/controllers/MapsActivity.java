@@ -20,9 +20,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWi
           OnMapReadyCallback {
     private final double ATL_LAT = 33.753746;
     private final double ATL_LONG = -84.386330;
-    private final int ATL_ZOOM = 11;
 
-    private LatLng mAtlanta = new LatLng(ATL_LAT, ATL_LONG);
+    private final LatLng mAtlanta = new LatLng(ATL_LAT, ATL_LONG);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +45,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWi
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        final int ATL_ZOOM = 11;
+
         List<Shelter> shelterList = DashboardActivity.shelterAdapter.getShelters();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, ATL_ZOOM));
       
@@ -54,8 +55,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWi
                     Toast.LENGTH_LONG).show();
         } else {
             for (Shelter shelter : shelterList) {
-                LatLng shelterCoordinates = new LatLng(shelter.getLatitude(), shelter.getLongitude());
-                Marker shelMark = googleMap.addMarker(new MarkerOptions().position(shelterCoordinates)
+                LatLng coordinates = new LatLng(shelter.getLatitude(), shelter.getLongitude());
+                Marker shelMark = googleMap.addMarker(new MarkerOptions().position(coordinates)
                         .title(shelter.getName()).snippet("Phone: " + shelter.getPhoneNumber()));
                 shelMark.setTag(shelter.getId());
             }

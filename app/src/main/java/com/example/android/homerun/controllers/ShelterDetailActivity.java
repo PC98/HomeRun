@@ -13,8 +13,6 @@ import com.example.android.homerun.model.Shelter;
 import com.example.android.homerun.model.User;
 import com.example.android.homerun.model.UtilityMethods;
 
-import static java.security.AccessController.getContext;
-
 
 public class ShelterDetailActivity extends AppCompatActivity {
     private Shelter current;
@@ -39,7 +37,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
 
         String restrictions = current.getRestrictions();
         TextView shelter_restrictions_widget = findViewById(R.id.shelter_detail_view_restrictions);
-        shelter_restrictions_widget.setText(getString(R.string.restr, restrictions));
+        shelter_restrictions_widget.setText(getString(R.string.restricted_to, restrictions));
 
         String address = current.getAddress();
         TextView shelter_location_widget = findViewById(R.id.shelter_detail_view_location);
@@ -59,22 +57,20 @@ public class ShelterDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Can't book more than one shelter
                 if (currentUser.getClaimedShelterId() != null) {
-                    AlertDialog.Builder rebookError  = new AlertDialog.Builder(
-                            ShelterDetailActivity.this);
-                    rebookError.setMessage("You have already reserved a shelter!");
-                    rebookError.setTitle("Shelter Allowance Exceeded");
-                    rebookError.setPositiveButton("OK", null);
-                    rebookError.create().show();
+                    presentAlert("Shelter Allowance Exceeded",
+                            "You have already reserved a shelter!");
                     return;
                 }
-                AlertDialog.Builder box = new AlertDialog.Builder(
-                        ShelterDetailActivity.this);
+
+                AlertDialog.Builder box = new AlertDialog.Builder(ShelterDetailActivity.this);
                 box.setTitle("How many spots would you like?");
+
                 String[] types;
                 shelterIndividualCapacity = current.getCurrentIndividualCapacity();
                 shelterFamilyCapacity = current.getCurrentFamilyCapacity();
                 boolean isIndividual = shelterIndividualCapacity != null;
                 boolean isFamily =  shelterFamilyCapacity != null;
+
                 if (isIndividual && isFamily) {
                     types = new String[]{"One Bed - Individual", "Two Beds - Individual",
                             "Three Beds - Family", "Four Beds - Family"};
@@ -88,67 +84,59 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             "Three Beds - Family", "Four Beds - Family"};
                     shelterType = 2;
                 } else {
-                    AlertDialog.Builder failure  = new AlertDialog.Builder(
-                            ShelterDetailActivity.this);
-                    failure.setMessage("You cannot reserve spots at this shelter!");
-                    failure.setTitle("Shelter Unsupported!");
-                    failure.setPositiveButton("OK", null);
-                    failure.create().show();
+                    presentAlert("Shelter Unsupported!",
+                            "You cannot reserve spots at this shelter!");
                     return;
                 }
+
                 box.setItems(types, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         int spotsClaimed = which + 1;
-                        int shelterCapacity = 0;
-                        if (shelterType == 0) {
-                            if (spotsClaimed >= 3) {
-                                shelterCapacity = shelterFamilyCapacity;
-                            } else {
-                                shelterCapacity = shelterIndividualCapacity;
-                            }
-                        } else if (shelterType == 1) {
+                        int shelterCapacity;
+
+                        if ((shelterType == 1) || ((shelterType == 0) && (spotsClaimed <= 2))) {
                             shelterCapacity = shelterIndividualCapacity;
                         } else {
                             shelterCapacity = shelterFamilyCapacity;
                         }
+
                         if (spotsClaimed > shelterCapacity) {
-                            // Exceeding Shelter Capacity
-                            AlertDialog.Builder errorCap = new AlertDialog.Builder(
-                                    ShelterDetailActivity.this);
-                            errorCap.setTitle("Shelter Capacity Exceeded");
-                            errorCap.setMessage("Please Try Again!");
-                            errorCap.setPositiveButton("OK", null);
-                            errorCap.create().show();
+                            presentAlert("Shelter Capacity Exceeded!", "Please try again later.");
 
                         } else {
-                            // Assign Shelter to User (at least locally, for now)
-                            String spotsData = "";
+                            String spotsData;
                             if ((shelterType == 1) || ((shelterType == 0) && (spotsClaimed <= 2))) {
-                                spotsData += "individual/";
+                                spotsData = "individual/";
                                 UtilityMethods.updateShelter(current, null,
                                         current.getCurrentIndividualCapacity() - spotsClaimed);
                             } else {
-                                spotsData += "family/";
+                                spotsData = "family/";
                                 UtilityMethods.updateShelter(current,
                                         current.getCurrentFamilyCapacity() - spotsClaimed, null);
                             }
+
                             spotsData += spotsClaimed;
                             UtilityMethods.updateUser(currentUser, current.getId(), spotsData);
-                            AlertDialog.Builder success  = new AlertDialog.Builder(
-                                    ShelterDetailActivity.this);
-                            success.setMessage("You have successfully reserved your spot(s)!");
-                            success.setTitle("Success!");
-                            success.setPositiveButton("OK", null);
-                            success.create().show();
-                            dialog.dismiss();
+                            shelter_capacity_widget.setText(getString(R.string.capacity,
+                                    current.getCapacityString()));
 
-                            shelter_capacity_widget.setText(getString(R.string.capacity, current.getCapacityString()));
+                            presentAlert("Success!",
+                                    "You have successfully reserved your spot(s).");
                         }
+                        dialog.dismiss();
                     }
                 });
                 box.show();
             }
         });
+    }
+
+    private void presentAlert(CharSequence title, CharSequence message) {
+        AlertDialog.Builder alert  = new AlertDialog.Builder(ShelterDetailActivity.this);
+        alert.setMessage(message);
+        alert.setTitle(title);
+        alert.setPositiveButton("OK", null);
+        alert.create().show();
     }
 }
