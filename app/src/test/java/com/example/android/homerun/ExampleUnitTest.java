@@ -59,8 +59,7 @@ public class ExampleUnitTest {
 
     @Test
     public void isEmalValidNullCheck() {
-        String testEmail = null;
-        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+        assertEquals(false, UtilityMethods.isEmailValid(null));
     }
 
     @Test

@@ -102,6 +102,7 @@ public class DashboardActivity extends AppCompatActivity {
                 } else {
                     for (DataSnapshot shelterDataSnapshot : dataSnapshot.getChildren()) {
                         Shelter shelter = shelterDataSnapshot.getValue(Shelter.class);
+                        assert shelter != null;
                         shelterMap.put(shelter.getId(), shelter);
                     }
                 }
@@ -136,6 +137,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
                 Shelter newShelter = dataSnapshot.getValue(Shelter.class);
+                assert newShelter != null;
                 Shelter oldShelter = shelterMap.get(newShelter.getId());
 
                 oldShelter.setCurrentFamilyCapacity(newShelter.getCurrentFamilyCapacity());
@@ -241,59 +243,7 @@ public class DashboardActivity extends AppCompatActivity {
                 dlgAlert.create().show();
 
             } else {
-                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-                final Shelter claimedShelter = (currentUser.getClaimedShelterId() == null) ? null :
-                                shelterMap.get(currentUser.getClaimedShelterId());
-                String message;
-
-                dlgAlert.setTitle(String.format("Hi %s!", currentUser.getName()));
-
-                if (claimedShelter == null) {
-                    message = "You currently hold no spots.";
-                } else {
-                    String[] spots = currentUser.getClaimedSpots().split("/");
-                    message = String.format("You currently hold %s %s spots at %s",
-                            spots[1], spots[0], claimedShelter.getName());
-                }
-
-                dlgAlert.setNeutralButton("VACATE SPOTS",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String[] spots = currentUser.getClaimedSpots().split("/");
-                                UtilityMethods.updateUser(currentUser, null, null);
-
-                                if("family".equalsIgnoreCase(spots[0])) {
-                                    UtilityMethods.updateShelter(claimedShelter,
-                                            claimedShelter.
-                                                    getCurrentFamilyCapacity() +
-                                                    Integer.parseInt(spots[1]), null);
-                                } else {
-                                    UtilityMethods.updateShelter(claimedShelter, null,
-                                            claimedShelter.getCurrentIndividualCapacity()
-                                                    + Integer.parseInt(spots[1]));
-                                }
-
-                                final Toast vacateSuccess = Toast.makeText(getApplicationContext(),
-                                        "You have successful vacated your spot(s).", Toast.LENGTH_LONG);
-                                vacateSuccess.show();
-                            }
-                        });
-
-                dlgAlert.setNegativeButton("LOGOUT",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                FirebaseAuth.getInstance().signOut();
-                                finish();
-                            }
-                        });
-
-                dlgAlert.setMessage(message);
-                AlertDialog dlg = dlgAlert.create();
-                dlg.show();
-                dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(
-                        claimedShelter != null);
+                presentUserProfile();
             }
         } else if (id == R.id.map_action) {
             if (shelterMap == null) {
@@ -303,10 +253,70 @@ public class DashboardActivity extends AppCompatActivity {
                 dlgAlert.setPositiveButton("OK", null);
                 dlgAlert.setMessage("We are still fetching shelter details.");
                 dlgAlert.create().show();
+            } else {
+                startActivity(new Intent(this, MapsActivity.class));
             }
-            startActivity(new Intent(this, MapsActivity.class));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void presentUserProfile() {
+        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+        final Shelter claimedShelter = (currentUser.getClaimedShelterId() == null) ? null :
+                shelterMap.get(currentUser.getClaimedShelterId());
+        String message;
+
+        dlgAlert.setTitle(String.format("Hi %s!", currentUser.getName()));
+
+        if (claimedShelter == null) {
+            message = "You currently hold no spots.";
+        } else {
+            String[] spots = currentUser.getClaimedSpots().split("/");
+            message = String.format("You currently hold %s %s spots at %s",
+                    spots[1], spots[0], claimedShelter.getName());
+        }
+
+        dlgAlert.setNeutralButton("VACATE SPOTS",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String[] spots = currentUser.getClaimedSpots().split("/");
+                        UtilityMethods.updateUser(currentUser, null, null);
+
+                        if("family".equalsIgnoreCase(spots[0])) {
+                            assert claimedShelter != null;
+                            UtilityMethods.updateShelter(claimedShelter,
+                                    claimedShelter.
+                                            getCurrentFamilyCapacity() +
+                                            Integer.parseInt(spots[1]), null);
+                        } else {
+                            assert claimedShelter != null;
+                            UtilityMethods.updateShelter(claimedShelter, null,
+                                    claimedShelter.getCurrentIndividualCapacity()
+                                            + Integer.parseInt(spots[1]));
+                        }
+
+                        final Toast vacateSuccess = Toast.makeText(getApplicationContext(),
+                                "You have successful vacated your spot(s).",
+                                Toast.LENGTH_LONG);
+                        vacateSuccess.show();
+                    }
+                });
+
+        dlgAlert.setNegativeButton("LOGOUT",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                        finish();
+                    }
+                });
+
+        dlgAlert.setMessage(message);
+        AlertDialog dlg = dlgAlert.create();
+        dlg.show();
+        dlg.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(
+                claimedShelter != null);
     }
 
     /**

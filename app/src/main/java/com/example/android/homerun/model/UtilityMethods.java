@@ -41,6 +41,7 @@ public class UtilityMethods {
         Pattern pat = Pattern.compile(PASSWORD_REGEX);
         return (password != null) && pat.matcher(password).matches();
     }
+
     public static boolean isNameValid(CharSequence name) {
         Pattern pat = Pattern.compile(NAME_REGEX);
         return (name != null) && pat.matcher(name).matches();
