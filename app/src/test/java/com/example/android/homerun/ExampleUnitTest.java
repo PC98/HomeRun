@@ -160,17 +160,16 @@ public class ExampleUnitTest {
     }
     @Test
     public void PasswordIsNull() {
-        Charsequence testPassword = null;
-        assertEquals(false, isPasswordValid(testPassword));
+        assertEquals(false, UtilityMethods.isPasswordValid(null));
     }
     @Test
     public void PasswordIsNotValid() {
-        Charsequence testPassword = "pass";
-        assertEquals(false, isPasswordValid(testPassword));
+        CharSequence testPassword = "pass";
+        assertEquals(false, UtilityMethods.isPasswordValid(testPassword));
     }
     @Test
     public void PasswordIsValid() {
-        Charsequence testPassword = "Lifeofpablo4";
-        assertEquals(true, isPasswordValid(testPassword));
+        CharSequence testPassword = "Lifeofpablo4";
+        assertEquals(true, UtilityMethods.isPasswordValid(testPassword));
     }
 }
