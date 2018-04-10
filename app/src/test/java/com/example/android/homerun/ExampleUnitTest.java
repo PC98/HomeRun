@@ -23,7 +23,7 @@ public class ExampleUnitTest {
 
     /**
      * Unit tests for getCapacityString() in Shelter.java.
-     * @author Lauren
+     * @author Lauren Achey
      */
     @Test
     public void shelterCapacityWithNoNullValues_isCorrect() {
@@ -33,6 +33,10 @@ public class ExampleUnitTest {
         assertEquals("0 individual spots, 0 family spots", testShelter.getCapacityString());
     }
 
+    /**
+     * Unit tests for getCapacityString() in Shelter.java.
+     * @author Lauren Achey
+     */
     @Test
     public void shelterCapacityWithNullFamilyValue_isCorrect() {
         Shelter testShelter = createShelterForTesting(0,
@@ -41,6 +45,10 @@ public class ExampleUnitTest {
         assertEquals("0 individual spots", testShelter.getCapacityString());
     }
 
+    /**
+     * Unit tests for getCapacityString() in Shelter.java.
+     * @author Lauren Achey
+     */
     @Test
     public void shelterCapacityWithNullIndividualShelterValue_isCorrect() {
         Shelter testShelter = createShelterForTesting(null,
@@ -49,6 +57,10 @@ public class ExampleUnitTest {
         assertEquals("0 family spots", testShelter.getCapacityString());
     }
 
+    /**
+     * Unit tests for getCapacityString() in Shelter.java.
+     * @author Lauren Achey
+     */
     @Test
     public void shelterCapacityWithBothNull_isCorrect() {
         Shelter testShelter = createShelterForTesting(null,
