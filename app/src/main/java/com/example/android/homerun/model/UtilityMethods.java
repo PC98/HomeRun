@@ -12,6 +12,9 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * A class to hold utility methods used throughout the app
+ */
 public class UtilityMethods {
 
     // From https://www.geeksforgeeks.org/check-email-address-valid-not-java/
@@ -144,8 +147,6 @@ public class UtilityMethods {
             } catch (Exception e) {
                 Log.e("Firebase", e.getMessage());
             }
-
-
         } else {
             assert currentIndividualCapacity == null;
 

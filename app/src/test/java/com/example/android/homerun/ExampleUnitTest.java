@@ -39,10 +39,11 @@ public class ExampleUnitTest {
     /**
      * Unit tests for isEmailValid(String email) in UtilityMethods.java. Ensures that only valid
      * emails are used when interacting with the application
+     *
      * @author Jeffrey Jacob
      */
     @Test
-    public void isEmailValid() {
+    public void test_isEmailValid() {
         //Test if null
         assertEquals(false, UtilityMethods.isEmailValid(null));
         //Test if missing domain

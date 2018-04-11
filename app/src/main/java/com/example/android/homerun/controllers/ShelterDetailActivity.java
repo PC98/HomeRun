@@ -13,7 +13,9 @@ import com.example.android.homerun.model.Shelter;
 import com.example.android.homerun.model.User;
 import com.example.android.homerun.model.UtilityMethods;
 
-
+/**
+ * A screen that displays more details about a Shelter
+ */
 public class ShelterDetailActivity extends AppCompatActivity {
     private Shelter current;
     private User currentUser;

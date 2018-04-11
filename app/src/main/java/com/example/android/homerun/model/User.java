@@ -1,5 +1,8 @@
 package com.example.android.homerun.model;
 
+/**
+ * A class to represent a user
+ */
 public class User {
     private String name;
     private String username;

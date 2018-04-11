@@ -1,5 +1,8 @@
 package com.example.android.homerun.model;
 
+/**
+ * Constants that relate to the Firebase database
+ */
 public class FirebaseConstants {
     public static final String DATABASE_USERS = "users";
     public static final String DATABASE_SHELTERS = "shelters";

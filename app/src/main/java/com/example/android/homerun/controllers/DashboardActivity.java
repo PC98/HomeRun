@@ -45,6 +45,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The main activity for the app that displays a list of shelters, supports filtering the list and
+ * allows the user to navigate to other parts of the app.
+ */
 public class DashboardActivity extends AppCompatActivity {
 
     private View mProgressView;

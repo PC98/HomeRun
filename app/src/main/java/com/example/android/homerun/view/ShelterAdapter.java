@@ -21,6 +21,9 @@ import java.util.List;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
+/**
+ * A custom ArrayAdapter to display a list of shelters, also supports filtering
+ */
 public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
 
     private final List<Shelter> arrayList;

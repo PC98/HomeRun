@@ -1,5 +1,8 @@
 package com.example.android.homerun.model;
 
+/**
+ * An enum for Shelter gender categories
+ */
 public enum GenderCategories {
     MALE ("Male"), FEMALE ("Female"), ANYONE ("Anyone");
 

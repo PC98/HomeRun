@@ -1,5 +1,8 @@
 package com.example.android.homerun.model;
 
+/**
+ * A class to represent a shelter
+ */
 public class Shelter {
     private String id;
     private String name;
