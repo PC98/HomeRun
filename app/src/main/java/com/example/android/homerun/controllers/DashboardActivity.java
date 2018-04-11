@@ -195,9 +195,7 @@ public class DashboardActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item, FilterCategories.values());
         mFilterCategories.setAdapter(adapter);
     }
-    /**
-     * Asks user if they want to logout
-     */
+
     @Override
     public void onBackPressed() {
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
@@ -215,19 +213,12 @@ public class DashboardActivity extends AppCompatActivity {
         dlgAlert.create().show();
     }
 
-    /**
-     * Create an action bar button
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.custom_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-
-    /**
-     * Handles button activities
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -292,15 +283,14 @@ public class DashboardActivity extends AppCompatActivity {
 
                         if("family".equalsIgnoreCase(spots[0])) {
                             assert claimedShelter != null;
-                            UtilityMethods.updateShelter(claimedShelter,
-                                    claimedShelter.
-                                            getCurrentFamilyCapacity() +
-                                            Integer.parseInt(spots[1]), null);
+                            UtilityMethods.updateShelter(claimedShelter, null,
+                                    claimedShelter.getCurrentFamilyCapacity() +
+                                            Integer.parseInt(spots[1]));
                         } else {
                             assert claimedShelter != null;
-                            UtilityMethods.updateShelter(claimedShelter, null,
+                            UtilityMethods.updateShelter(claimedShelter,
                                     claimedShelter.getCurrentIndividualCapacity()
-                                            + Integer.parseInt(spots[1]));
+                                            + Integer.parseInt(spots[1]), null);
                         }
 
                         final Toast vacateSuccess = Toast.makeText(getApplicationContext(),
@@ -326,9 +316,6 @@ public class DashboardActivity extends AppCompatActivity {
                 claimedShelter != null);
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

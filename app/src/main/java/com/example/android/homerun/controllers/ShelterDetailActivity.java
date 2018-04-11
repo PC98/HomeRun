@@ -108,12 +108,13 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             String spotsData;
                             if ((shelterType == 1) || ((shelterType == 0) && (spotsClaimed <= 2))) {
                                 spotsData = "individual/";
-                                UtilityMethods.updateShelter(current, null,
-                                        current.getCurrentIndividualCapacity() - spotsClaimed);
+                                UtilityMethods.updateShelter(current,
+                                        current.getCurrentIndividualCapacity()
+                                                - spotsClaimed, null);
                             } else {
                                 spotsData = "family/";
-                                UtilityMethods.updateShelter(current,
-                                        current.getCurrentFamilyCapacity() - spotsClaimed, null);
+                                UtilityMethods.updateShelter(current,null,
+                                        current.getCurrentFamilyCapacity() - spotsClaimed);
                             }
 
                             spotsData += spotsClaimed;

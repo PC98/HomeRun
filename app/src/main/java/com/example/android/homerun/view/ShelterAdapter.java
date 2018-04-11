@@ -27,24 +27,35 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
     private List<Shelter> originalList; // Original Values
     private FilterCategories filterCategory;
 
+    /**
+     * Parameterized constructor to create a ShelterAdapter object for a context with a list of
+     * Shelters
+     *
+     * @param context Context that will use this ShelterAdapter object
+     * @param list The list of Shelters that the adapter will hold
+     */
     public ShelterAdapter(Context context, List<Shelter> list) {
         super(context, 0, list);
         this.arrayList = list;
         this.filterCategory = FilterCategories.NAME;
     }
 
+    /**
+     * Returns a list of Shelters that this adapter currently holds.
+     *
+     * @return list of Shelters
+     */
     public List<Shelter> getShelters() {
         return arrayList;
     }
 
-
     /**
-     * Sets the search category to be reflected on the search screen
-     * @parameter a search category
-
+     * Sets the filter category that getFilter() will use.
+     *
+     * @param filterCategory the FilterCategories
      */
-    public void setSearchCategory(FilterCategories searchCategory) {
-        this.filterCategory = searchCategory;
+    public void setSearchCategory(FilterCategories filterCategory) {
+        this.filterCategory = filterCategory;
     }
 
     @NonNull
