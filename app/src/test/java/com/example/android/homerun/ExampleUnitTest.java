@@ -185,4 +185,28 @@ public class ExampleUnitTest {
         testPassword = "Lifeofpablo4";
         assertEquals(true, UtilityMethods.isPasswordValid(testPassword));
     }
+
+    /**
+     * Unit tests for updating shelter in utility methods.
+     * @author Camille Atere-Roberts
+     */
+
+    @Test
+    public void shelterUpdaterTest() {
+        Shelter testShelter = createShelterForTesting(5,5);
+        UtilityMethods tester = new UtilityMethods();
+        tester.updateShelter(testShelter,10,10);
+        assertEquals(10,testShelter.getCurrentIndividualCapacity());
+        assertEquals(10,testShelter.getCurrentFamilyCapacity());
+
+    }
+    @Test
+    public void shelterUpdaterNullInputTest() {
+        Shelter testShelter = createShelterForTesting(5,5);
+        UtilityMethods tester = new UtilityMethods();
+        tester.updateShelter(testShelter,null,10);
+        assertEquals(10,testShelter.getCurrentIndividualCapacity());
+        assertEquals(null,testShelter.getCurrentFamilyCapacity());
+
+    }
 }

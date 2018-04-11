@@ -27,26 +27,51 @@ public class UtilityMethods {
     // Letters from any language and some special characters:
     private static final String NAME_REGEX = "^[\\p{L} .'-]+$";
 
+    /**
+     * checks to make sure inputted email is valid
+     * @return true of false indicating if an email is valid
+     * @parameter an CharSequence representing an email
+     */
     public static boolean isEmailValid(CharSequence email) {
         Pattern pat = Pattern.compile(EMAIL_REGEX);
         return (email != null) && pat.matcher(email).matches();
     }
 
+    /**
+     * checks to make sure inputted username is valid
+     * @return true of false indicating if a username is valid
+     * @parameter an CharSequence representing a username
+     */
     public static boolean isUsernameValid(CharSequence username) {
         Pattern pat = Pattern.compile(USERNAME_REGEX);
         return (username != null) && pat.matcher(username).matches();
     }
 
+    /**
+     * checks to make sure inputted password is valid
+     * @return true of false indicating if a passoword is valid
+     * @parameter an CharSequence representing a password
+     */
     public static boolean isPasswordValid(CharSequence password) {
         Pattern pat = Pattern.compile(PASSWORD_REGEX);
         return (password != null) && pat.matcher(password).matches();
     }
 
+    /**
+     * checks to make sure inputted name is valid
+     * @return true of false indicating if a name is valid
+     * @parameter an CharSequence representing a name
+     */
     public static boolean isNameValid(CharSequence name) {
         Pattern pat = Pattern.compile(NAME_REGEX);
         return (name != null) && pat.matcher(name).matches();
     }
 
+    /**
+     * Creates a new shelter database
+     * @parameter an Input Stream
+     * @parameter A Map of the shelters
+     */
     public static void createShelterDatabase(InputStream inputStream, Map<String,
             Shelter> shelterMap) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -87,6 +112,12 @@ public class UtilityMethods {
         }
     }
 
+    /**
+     * Updates the capacities of a shelter
+     * @parameter a shelter object representing a single shelter
+     * @parameter the new family capacity
+     * @parameter the new individual capacity
+     */
     public static void updateShelter(Shelter shelter, Integer currentFamilyCapacity,
                                      Integer currentIndividualCapacity) {
         if (currentFamilyCapacity == null) {
@@ -109,6 +140,12 @@ public class UtilityMethods {
         }
     }
 
+    /**
+     * Updates the claimed shelter ID's and Claimed Spots of a user
+     * @parameter a user object representing a single user
+     * @parameter the new shelter ID
+     * @parameter the new claimed spots
+     */
     public static void updateUser(User user, String claimedShelterId, String claimedSpots) {
 
         user.setClaimedShelterId(claimedShelterId);

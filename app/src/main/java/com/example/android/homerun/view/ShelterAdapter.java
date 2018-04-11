@@ -37,6 +37,12 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         return arrayList;
     }
 
+
+    /**
+     * Sets the search category to be reflected on the search screen
+     * @parameter a search category
+
+     */
     public void setSearchCategory(FilterCategories searchCategory) {
         this.filterCategory = searchCategory;
     }
