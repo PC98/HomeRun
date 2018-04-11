@@ -17,9 +17,9 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
 
     /**
-     * Test getCapacityString() in Shelter.java
+     * Unit tests for getCapacityString() in Shelter.java
      *
-     * @author Lauren
+     * @author Lauren Achey
      */
     @Test
     public void test_getCapacityString() {
