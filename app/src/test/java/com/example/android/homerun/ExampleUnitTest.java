@@ -57,33 +57,23 @@ public class ExampleUnitTest {
         assertEquals("N/A", testShelter.getCapacityString());
     }
 
+    /**
+     * Unit tests for isEmailValid(String email) in UtilityMethods.java. Ensures that only valid
+     * emails are used when interacting with the application
+     * @author Jeffrey Jacob
+     */
     @Test
-    public void isEmailValidNullCheck() {
+    public void isEmailValid() {
+        //Test if null
         assertEquals(false, UtilityMethods.isEmailValid(null));
-    }
-
-    @Test
-    public void isEmailValidInvalidEmail_nocom() {
-        String testEmail = "test@gmail";
-        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
-    }
-
-    @Test
-    public void isEmailValidInvalidEmail_noAt() {
-        String testEmail = "testgmail.com";
-        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
-    }
-
-    @Test
-    public void isEmailValidInvalidEmail_notEmail() {
-        String testEmail = "notAnEmail";
-        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
-    }
-
-    @Test
-    public void isEmailValid_validEmail() {
-        String testEmail = "test@email.com";
-        assertEquals(true, UtilityMethods.isEmailValid(testEmail));
+        //Test if missing domain
+        assertEquals(false, UtilityMethods.isEmailValid("test@gmail"));
+        //Test if missing @ sign
+        assertEquals(false, UtilityMethods.isEmailValid("testgmail.com"));
+        //Test if not an email
+        assertEquals(false, UtilityMethods.isEmailValid("notAnEmail"));
+        //Test valid email
+        assertEquals(true, UtilityMethods.isEmailValid("test@email.com"));
     }
 
     /**
