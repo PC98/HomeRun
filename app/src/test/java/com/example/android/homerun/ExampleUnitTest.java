@@ -85,7 +85,12 @@ public class ExampleUnitTest {
         String testEmail = "test@email.com";
         assertEquals(true, UtilityMethods.isEmailValid(testEmail));
     }
-  
+
+    /**
+     * Test isNameValid() in UtilityMethods.java
+     *
+     * @author Animesh Fatehpuria
+     */
     @Test
     public void testIsNameValid() {
         // Test for empty string
