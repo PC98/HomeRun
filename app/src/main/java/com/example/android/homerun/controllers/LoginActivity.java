@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.app.AlertDialog;
 
@@ -66,7 +67,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 attemptLogin();
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                assert imm != null;
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -77,7 +80,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                assert imm != null;
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -90,7 +95,9 @@ public class LoginActivity extends AppCompatActivity {
                 mPasswordView.setText("");
                 mPasswordView.clearFocus();
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                assert imm != null;
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
@@ -120,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
 
         showProgress(false);
     }
-
+  
     private void launchDashboardActivity(String userId) {
         Intent intent = new Intent(this, DashboardActivity.class);
         intent.putExtra("userId", userId);
@@ -141,36 +148,19 @@ public class LoginActivity extends AppCompatActivity {
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
-            cancel = true;
-        } else if (!UtilityMethods.isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid username address.
-        if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
-            cancel = true;
-        } else if (!UtilityMethods.isEmailValid(username)) {
-            if (UtilityMethods.isUsernameValid(username)) {
-                username += FirebaseConstants.EMAIL_DOMAIN;
-            } else {
-                mUsernameView.setError(getString(R.string.error_invalid_username));
-                focusView = mUsernameView;
-                cancel = true;
+        if (UtilityMethods.isUsernameValid(username)) {
+            if (UtilityMethods.isEmailValid(username)) {
+                throw new AssertionError();
             }
+            username += FirebaseConstants.EMAIL_DOMAIN;
         }
 
-        if (cancel) {
+        @Nullable View focusView;
+
+        focusView = isPasswordValid(password) ? null : mPasswordView;
+        focusView = isUsernameValid(username) ? focusView : mUsernameView;
+
+        if (focusView != null) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
@@ -178,30 +168,60 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(username, password)
-                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                LoginActivity.this.launchDashboardActivity(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            } else {
-                                showProgress(false);
-                                // If username and/or password mismatches, display an error dialog.
-                                mUsernameView.setText("");
-                                mPasswordView.setText("");
-
-                                mUsernameView.requestFocus();
-                                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(LoginActivity.this);
-
-                                dlgAlert.setMessage("Wrong Password or Username");
-                                dlgAlert.setTitle("Invalid Credentials");
-                                dlgAlert.setPositiveButton("OK", null);
-                                dlgAlert.create().show();
-                            }
-                        }
-                    });
+            firebaseLoginUser(username, password);
         }
+    }
+
+    private boolean isPasswordValid(CharSequence password){
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            return false;
+        } else if (!UtilityMethods.isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isUsernameValid(CharSequence username) {
+        if (TextUtils.isEmpty(username)) {
+            mUsernameView.setError(getString(R.string.error_field_required));
+            return false;
+        } else if (!UtilityMethods.isEmailValid(username)) {
+            mUsernameView.setError(getString(R.string.error_invalid_username));
+            return false;
+        }
+        return true;
+    }
+
+    private void firebaseLoginUser(String username, String password) {
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(username, password)
+                .addOnCompleteListener(LoginActivity.this,
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success!
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    assert user != null;
+                                    LoginActivity.this.launchDashboardActivity(user.getUid());
+                                } else {
+                                    showProgress(false);
+                                    // Display an error dialog.
+                                    mUsernameView.setText("");
+                                    mPasswordView.setText("");
+
+                                    mUsernameView.requestFocus();
+                                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(
+                                            LoginActivity.this);
+
+                                    dlgAlert.setMessage("Wrong Password or Username");
+                                    dlgAlert.setTitle("Invalid Credentials");
+                                    dlgAlert.setPositiveButton("OK", null);
+                                    dlgAlert.create().show();
+                                }
+                            }
+                        });
     }
 
     /**

@@ -8,6 +8,11 @@
     <string name="error_invalid_password">This password is invalid</string>
     <string name="error_invalid_name">This name is invalid</string>
     <string name="error_field_required">This field is required</string>
+    <string name = "capacity">Capacity: %1$s</string>
+    <string name = "restricted_to">Restricted to: %1$s</string>
+    <string name = "loc">Location: %1$s</string>
+    <string name="phone">Phone Number: %1$s</string>
+    <string name="specNot">Special Notes: %1$s</string>
     <string name="Name">Name</string>
     <string name="Username">Username</string>
     <string name="password">Password</string>

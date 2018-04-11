@@ -14,12 +14,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener,
+          OnMapReadyCallback {
+    private final double ATL_LAT = 33.753746;
+    private final double ATL_LONG = -84.386330;
 
-    private final LatLng mAtlanta = new LatLng(33.753746, -84.386330);
+    private final LatLng mAtlanta = new LatLng(ATL_LAT, ATL_LONG);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +45,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWi
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        final int ATL_ZOOM = 11;
+
         List<Shelter> shelterList = DashboardActivity.shelterAdapter.getShelters();
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, 11));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mAtlanta, ATL_ZOOM));
+      
         if (shelterList.isEmpty()) {
             Toast.makeText(this, "No shelters to show!",
                     Toast.LENGTH_LONG).show();
         } else {
             for (Shelter shelter : shelterList) {
-                LatLng shelCoord = new LatLng(shelter.getLatitude(), shelter.getLongitude());
-                Marker shelMark = googleMap.addMarker(new MarkerOptions().position(shelCoord)
+                LatLng coordinates = new LatLng(shelter.getLatitude(), shelter.getLongitude());
+                Marker shelMark = googleMap.addMarker(new MarkerOptions().position(coordinates)
                         .title(shelter.getName()).snippet("Phone: " + shelter.getPhoneNumber()));
                 shelMark.setTag(shelter.getId());
             }

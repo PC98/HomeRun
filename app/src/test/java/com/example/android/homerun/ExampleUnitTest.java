@@ -15,11 +15,16 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
 
+    /**
+     * Unit tests for getCapacityString() in Shelter.java.
+     * @author Lauren
+     */
     @Test
     public void shelterCapacityWithNoNullValues_isCorrect() {
         Shelter testShelter = createShelterForTesting(0,
@@ -29,7 +34,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void shelterCapcaityWithNullFamilyValue_isCorrect() {
+    public void shelterCapacityWithNullFamilyValue_isCorrect() {
         Shelter testShelter = createShelterForTesting(0,
                 null
         );
@@ -37,7 +42,7 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void shelterCapcaityWithNullIndividualShelterValue_isCorrect() {
+    public void shelterCapacityWithNullIndividualShelterValue_isCorrect() {
         Shelter testShelter = createShelterForTesting(null,
                 0
         );
@@ -45,14 +50,42 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void shelterCapcaityWithBothNull_isCorrect() {
+    public void shelterCapacityWithBothNull_isCorrect() {
         Shelter testShelter = createShelterForTesting(null,
                 null
         );
         assertEquals("N/A", testShelter.getCapacityString());
     }
 
-    // Animesh Fatehpuria
+    @Test
+    public void isEmailValidNullCheck() {
+        assertEquals(false, UtilityMethods.isEmailValid(null));
+    }
+
+    @Test
+    public void isEmailValidInvalidEmail_nocom() {
+        String testEmail = "test@gmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmailValidInvalidEmail_noAt() {
+        String testEmail = "testgmail.com";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmailValidInvalidEmail_notEmail() {
+        String testEmail = "notAnEmail";
+        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
+    }
+
+    @Test
+    public void isEmailValid_validEmail() {
+        String testEmail = "test@email.com";
+        assertEquals(true, UtilityMethods.isEmailValid(testEmail));
+    }
+  
     @Test
     public void testIsNameValid() {
         // Test for empty string
@@ -99,5 +132,52 @@ public class ExampleUnitTest {
                 "1234561234",
                 AgeCategories.ANYONE,
                 GenderCategories.ANYONE));
+    }
+
+    /**
+     * Test isUsernameValid() in UtilityMethods.java
+     *
+     * @author Prabhav Chawla
+     */
+    @Test
+    public void test_isUsernameValid() {
+        // Can't have null or empty username
+        assertEquals(false, UtilityMethods.isUsernameValid(null));
+        assertEquals(false, UtilityMethods.isUsernameValid(""));
+
+        // No spaces either
+        assertEquals(false, UtilityMethods.isUsernameValid(" "));
+        assertEquals(false, UtilityMethods.isUsernameValid("abc "));
+        assertEquals(false, UtilityMethods.isUsernameValid(" abc"));
+        assertEquals(false, UtilityMethods.isUsernameValid("a bc"));
+
+        // No special characters (except email accepted characters)
+        assertEquals(false, UtilityMethods.isUsernameValid("@"));
+        assertEquals(false, UtilityMethods.isUsernameValid("$"));
+        assertEquals(false, UtilityMethods.isUsernameValid("?"));
+        assertEquals(false, UtilityMethods.isUsernameValid("!#%^&*"));
+
+        // Allow alphanumeric and email accepted characters:
+        assertEquals(true, UtilityMethods.isUsernameValid("pchawla"));
+        assertEquals(true, UtilityMethods.isUsernameValid("pchawla8"));
+        assertEquals(true, UtilityMethods.isUsernameValid("213adasd"));
+        assertEquals(true, UtilityMethods.isUsernameValid("prabhav_chawla22"));
+    }
+
+    /**
+     * Test isPasswordValid() in UtilityMethods.java
+     *
+     * @author Anand Chaturvedi
+     */
+    @Test
+    public void test_isPasswordValid() {
+        // password cannot be null
+        assertEquals(false, UtilityMethods.isPasswordValid(null));
+        // password has to be six characters minimum
+        CharSequence testPassword = "pass";
+        assertEquals(false, UtilityMethods.isPasswordValid(testPassword));
+        // accepted password
+        testPassword = "Lifeofpablo4";
+        assertEquals(true, UtilityMethods.isPasswordValid(testPassword));
     }
 }

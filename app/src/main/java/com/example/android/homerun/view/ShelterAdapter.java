@@ -21,17 +21,13 @@ import java.util.List;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
-/**
- * Created by PC on 2/27/18.
- */
-
 public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
 
-    private final ArrayList<Shelter> arrayList;
+    private final List<Shelter> arrayList;
     private List<Shelter> originalList; // Original Values
     private FilterCategories filterCategory;
 
-    public ShelterAdapter(Context context, ArrayList<Shelter> list) {
+    public ShelterAdapter(Context context, List<Shelter> list) {
         super(context, 0, list);
         this.arrayList = list;
         this.filterCategory = FilterCategories.NAME;
@@ -41,14 +37,17 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         return arrayList;
     }
 
-    public void setSearchCategory(FilterCategories searchCategory) { this.filterCategory = searchCategory;}
+    public void setSearchCategory(FilterCategories searchCategory) {
+        this.filterCategory = searchCategory;
+    }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
         if(listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.shelter_list_item, parent, false);
+            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.shelter_list_item,
+                    parent, false);
         }
 
         Shelter shelter = getItem(position);
@@ -60,12 +59,13 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
         assert shelter != null;
         name.setText(shelter.getName());
 
-        capacity.setText("Capacity: " + shelter.getCapacityString());
-        gender.setText("Restricted to: " + shelter.getRestrictions());
+        capacity.setText(getContext().getString(R.string.capacity, shelter.getCapacityString()));
+        gender.setText(getContext().getString(R.string.restricted_to, shelter.getRestrictions()));
 
         return listItemView;
     }
 
+    @NonNull
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -80,109 +80,121 @@ public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable 
 
             @Override
             protected FilterResults performFiltering(final CharSequence constraint) {
-                final FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                final List<Shelter> filteredArrList = new ArrayList();
-
+                final FilterResults results = new FilterResults();
+                final List<Shelter> filteredArrList = new ArrayList<>();
+              
                 if (originalList == null) {
-                    originalList = new ArrayList(arrayList); // saves the original data in mOriginalValues
+                    originalList = new ArrayList<>(arrayList);
                 }
 
-                /********
-                 *
-                 *  If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
-                 *  else does the Filtering and returns FilteredArrList(Filtered)
-                 *
-                 ********/
                 if ((constraint == null) || (constraint.length() == 0)) {
-
-                    // set the Original result to return
                     results.count = originalList.size();
                     results.values = originalList;
+
                 } else {
                     final String constraint_string = constraint.toString().toLowerCase();
 
                     for (int i = 0; i < originalList.size(); i++) {
-                        String data;
-                        switch (filterCategory) {
-                            case AGE:
-                                data = originalList.get(i).getAgeCategory().toString().toLowerCase();
-                                break;
-                            case GENDER:
-                                data = originalList.get(i).getGenderCategory().toString().toLowerCase();
-                                break;
-                            case NAME:
-                                data = originalList.get(i).getName().toLowerCase();
-                                break;
-                            default:
-                                data = "";
-                        }
-
-                        if ((filterCategory == FilterCategories.GENDER) ?
-                                (data.equals(GenderCategories.ANYONE.toString().toLowerCase())
-                                        || data.startsWith(constraint_string) ||
-                                        (FuzzySearch.tokenSetRatio(constraint_string, data) >= 90)) :
-                                (data.contains(constraint_string) ||
-                                        (FuzzySearch.tokenSetRatio(constraint_string, data) >= 45))) {
-                            filteredArrList.add(originalList.get(i));
+                        Shelter shelter = originalList.get(i);
+                        if (satisfiesExactConstraint(shelter, constraint_string) ||
+                                (fuzzySearchScore(shelter, constraint_string) > 0)) {
+                            filteredArrList.add(shelter);
                         }
                     }
 
                     filteredArrList.sort(new Comparator<Shelter>() {
                         @Override
                         public int compare(Shelter s1, Shelter s2) {
-                            String s1_data;
-                            String s2_data;
+                            boolean s1_bool = satisfiesExactConstraint(s1, constraint_string);
+                            boolean s2_bool = satisfiesExactConstraint(s2, constraint_string);
 
-                            switch (filterCategory) {
-                                case AGE:
-                                    s1_data = s1.getAgeCategory().toString().toLowerCase();
-                                    s2_data = s2.getAgeCategory().toString().toLowerCase();
-                                    break;
-                                case GENDER:
-                                    s1_data = s1.getGenderCategory().toString().toLowerCase();
-                                    s2_data = s2.getGenderCategory().toString().toLowerCase();
-                                    break;
-                                case NAME:
-                                    s1_data = s1.getName().toLowerCase();
-                                    s2_data = s2.getName().toLowerCase();
-                                    break;
-                                default:
-                                    s1_data = "";
-                                    s2_data = "";
-                            }
-
-                            if ((filterCategory == FilterCategories.GENDER) ?
-                                    s1_data.startsWith(constraint_string) :
-                                    s1_data.contains(constraint_string)) {
-
-                                if (!((filterCategory == FilterCategories.GENDER) ?
-                                        s2_data.startsWith(constraint_string) :
-                                        s2_data.contains(constraint_string))) {
+                            if (s1_bool) {
+                                if (!s2_bool) {
                                     return -1;
                                 }
-                                return s1.getName().toLowerCase().compareTo(s2.getName().toLowerCase());
-
-                            } else if ((filterCategory == FilterCategories.GENDER) ?
-                                    s2_data.startsWith(constraint_string) :
-                                    s2_data.contains(constraint_string)) {
+                                return s1.getName().compareToIgnoreCase(s2.getName());
+                            } else if (s2_bool) {
                                 return 1;
                             }
 
-                            int diff = FuzzySearch.tokenSetRatio(constraint_string, s2_data) -
-                                    FuzzySearch.tokenSetRatio(constraint_string, s1_data);
+                            int diff = fuzzySearchScore(s2, constraint_string) -
+                                    fuzzySearchScore(s1, constraint_string);
                             if (diff == 0) {
-                                return s1.getName().toLowerCase().compareTo(s2.getName().toLowerCase());
+                                return s1.getName().compareToIgnoreCase(s2.getName());
                             }
 
                             return diff;
                         }
                     });
 
-                    // set the Filtered result to return
                     results.count = filteredArrList.size();
                     results.values = filteredArrList;
                 }
                 return results;
+            }
+
+            private boolean satisfiesExactConstraint(Shelter shelter, String constraint_string) {
+                String data;
+                boolean toReturn;
+
+                switch (filterCategory) {
+
+                    case GENDER:
+                        data = shelter.getGenderCategory().toString().toLowerCase();
+                        toReturn = data.equalsIgnoreCase(GenderCategories.ANYONE.toString()) ||
+                                data.startsWith(constraint_string);
+                        break;
+
+                    case AGE:
+                        data = shelter.getAgeCategory().toString().toLowerCase();
+                        toReturn = data.contains(constraint_string);
+                        break;
+
+                    case NAME:
+                        data = shelter.getName().toLowerCase();
+                        toReturn = data.contains(constraint_string);
+                        break;
+
+                    default:
+                        toReturn = false;
+                }
+
+                return toReturn;
+            }
+
+            private int fuzzySearchScore(Shelter shelter, String constraint_string) {
+                final int GENDER_FUZZY_THRESHOLD = 90;
+                final int AGE_FUZZY_THRESHOLD = 45;
+                final int NAME_FUZZY_THRESHOLD = 45;
+
+                String data;
+                int toReturn;
+
+                switch (filterCategory) {
+
+                    case GENDER:
+                        data = shelter.getGenderCategory().toString().toLowerCase();
+                        toReturn = FuzzySearch.tokenSetRatio(constraint_string, data);
+                        toReturn = (toReturn >= GENDER_FUZZY_THRESHOLD) ? toReturn : 0;
+                        break;
+
+                    case AGE:
+                        data = shelter.getAgeCategory().toString().toLowerCase();
+                        toReturn = FuzzySearch.tokenSetRatio(constraint_string, data);
+                        toReturn = (toReturn >= AGE_FUZZY_THRESHOLD) ? toReturn : 0;
+                        break;
+
+                    case NAME:
+                        data = shelter.getName().toLowerCase();
+                        toReturn = FuzzySearch.tokenSetRatio(constraint_string, data);
+                        toReturn = (toReturn >= NAME_FUZZY_THRESHOLD) ? toReturn : 0;
+                        break;
+
+                    default:
+                        toReturn = 0;
+                }
+
+                return toReturn;
             }
         };
     }
