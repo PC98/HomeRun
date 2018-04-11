@@ -195,7 +195,9 @@ public class DashboardActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item, FilterCategories.values());
         mFilterCategories.setAdapter(adapter);
     }
-
+    /**
+     * Asks user if they want to logout
+     */
     @Override
     public void onBackPressed() {
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
@@ -213,14 +215,19 @@ public class DashboardActivity extends AppCompatActivity {
         dlgAlert.create().show();
     }
 
-    // create an action bar button
+    /**
+     * Create an action bar button
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.custom_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    // handle button activities
+
+    /**
+     * Handles button activities
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
