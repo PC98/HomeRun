@@ -21,16 +21,67 @@ public class User {
         this.accountType = accountType;
     }
 
+    /**
+     * returns user's name as a string
+     * @return user's name
+     */
     public String getName() {return name;}
+
+    /**
+     * returns user's username as a string
+     * @return account username
+     */
     public String getUsername() {return username;}
+
+    /**
+     * returns user's account password as a string
+     * @return account password
+     */
     public String getPassword() {return password;}
 
+    /**
+     * returns user's id as a string
+     * @return account ID
+     */
     public String getId() {return id;}
+
+    /**
+     * returns user's claimed shelter id as a string
+     * @return claimed shelter id
+     */
     public String getClaimedShelterId() {return claimedShelterId;}
+
+    /**
+     * returns user's claimed shelter spots as a string
+     * @return claimed shelter spots
+     */
     public String getClaimedSpots() {return claimedSpots;}
+
+    /**
+     * returns user's type of account
+     * @return account type
+     */
     public AccountType getAccountType() {return accountType;}
 
+
+    /**
+     * changes the value of the claimed shelter id capacity based on the user
+     * inputted string
+     * @parameter an string representing a new shelter ID
+     */
     public void setClaimedShelterId(String s) {this.claimedShelterId = s;}
+
+    /**
+     * changes the value of the claimed shelter spots capacity based on the user
+     * inputted string
+     * @parameter an string representing a new shelter spot
+     */
     public void setClaimedSpots(String s) {this.claimedSpots = s;}
+
+    /**
+     * changes the value of the account based on the user
+     * inputted string
+     * @parameter an string representing a new ID
+     */
     public void setId(String id) {this.id = id;}
 }
