@@ -58,30 +58,30 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void isEmalValidNullCheck() {
+    public void isEmailValidNullCheck() {
         assertEquals(false, UtilityMethods.isEmailValid(null));
     }
 
     @Test
-    public void isEmalValidInvalidEmail_nocom() {
+    public void isEmailValidInvalidEmail_nocom() {
         String testEmail = "test@gmail";
         assertEquals(false, UtilityMethods.isEmailValid(testEmail));
     }
 
     @Test
-    public void isEmalValidInvalidEmail_noAt() {
+    public void isEmailValidInvalidEmail_noAt() {
         String testEmail = "testgmail.com";
         assertEquals(false, UtilityMethods.isEmailValid(testEmail));
     }
 
     @Test
-    public void isEmalValidInvalidEmail_notEmail() {
+    public void isEmailValidInvalidEmail_notEmail() {
         String testEmail = "notAnEmail";
         assertEquals(false, UtilityMethods.isEmailValid(testEmail));
     }
 
     @Test
-    public void isEmalValid_validEmail() {
+    public void isEmailValid_validEmail() {
         String testEmail = "test@email.com";
         assertEquals(true, UtilityMethods.isEmailValid(testEmail));
     }
@@ -134,6 +134,11 @@ public class ExampleUnitTest {
                 GenderCategories.ANYONE));
     }
 
+    /**
+     * Test isUsernameValid() in UtilityMethods.java
+     *
+     * @author Prabhav Chawla
+     */
     @Test
     public void test_isUsernameValid() {
         // Can't have null or empty username
@@ -158,18 +163,21 @@ public class ExampleUnitTest {
         assertEquals(true, UtilityMethods.isUsernameValid("213adasd"));
         assertEquals(true, UtilityMethods.isUsernameValid("prabhav_chawla22"));
     }
+
+    /**
+     * Test isPasswordValid() in UtilityMethods.java
+     *
+     * @author Anand Chaturvedi
+     */
     @Test
-    public void PasswordIsNull() {
+    public void test_isPasswordValid() {
+        // password cannot be null
         assertEquals(false, UtilityMethods.isPasswordValid(null));
-    }
-    @Test
-    public void PasswordIsNotValid() {
+        // password has to be six characters minimum
         CharSequence testPassword = "pass";
         assertEquals(false, UtilityMethods.isPasswordValid(testPassword));
-    }
-    @Test
-    public void PasswordIsValid() {
-        CharSequence testPassword = "Lifeofpablo4";
+        // accepted password
+        testPassword = "Lifeofpablo4";
         assertEquals(true, UtilityMethods.isPasswordValid(testPassword));
     }
 }
