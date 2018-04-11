@@ -45,6 +45,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The main activity for the app that displays a list of shelters, supports filtering the list and
+ * allows the user to navigate to other parts of the app.
+ */
 public class DashboardActivity extends AppCompatActivity {
 
     private View mProgressView;
@@ -213,14 +217,12 @@ public class DashboardActivity extends AppCompatActivity {
         dlgAlert.create().show();
     }
 
-    // create an action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.custom_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    // handle button activities
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -285,15 +287,14 @@ public class DashboardActivity extends AppCompatActivity {
 
                         if("family".equalsIgnoreCase(spots[0])) {
                             assert claimedShelter != null;
-                            UtilityMethods.updateShelter(claimedShelter,
-                                    claimedShelter.
-                                            getCurrentFamilyCapacity() +
-                                            Integer.parseInt(spots[1]), null);
+                            UtilityMethods.updateShelter(claimedShelter, null,
+                                    claimedShelter.getCurrentFamilyCapacity() +
+                                            Integer.parseInt(spots[1]));
                         } else {
                             assert claimedShelter != null;
-                            UtilityMethods.updateShelter(claimedShelter, null,
+                            UtilityMethods.updateShelter(claimedShelter,
                                     claimedShelter.getCurrentIndividualCapacity()
-                                            + Integer.parseInt(spots[1]));
+                                            + Integer.parseInt(spots[1]), null);
                         }
 
                         final Toast vacateSuccess = Toast.makeText(getApplicationContext(),
@@ -319,9 +320,6 @@ public class DashboardActivity extends AppCompatActivity {
                 claimedShelter != null);
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

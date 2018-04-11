@@ -35,6 +35,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * A registration screen that lets a user register to use the app.
+ */
 public class RegistrationActivity extends AppCompatActivity {
 
     // UI references.

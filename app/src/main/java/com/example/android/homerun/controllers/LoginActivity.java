@@ -28,6 +28,7 @@ import com.example.android.homerun.model.FirebaseConstants;
 import com.example.android.homerun.model.UtilityMethods;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +38,6 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    // UI references.
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -104,6 +104,8 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        FirebaseApp.initializeApp(this);
     }
 
     @Override
@@ -134,11 +136,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid username, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
         // Reset errors.
         mUsernameView.setError(null);
@@ -224,9 +221,6 @@ public class LoginActivity extends AppCompatActivity {
                         });
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

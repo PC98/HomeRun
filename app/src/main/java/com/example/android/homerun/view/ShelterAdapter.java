@@ -21,24 +21,44 @@ import java.util.List;
 
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
+/**
+ * A custom ArrayAdapter to display a list of shelters, also supports filtering
+ */
 public class ShelterAdapter extends ArrayAdapter<Shelter> implements Filterable {
 
     private final List<Shelter> arrayList;
     private List<Shelter> originalList; // Original Values
     private FilterCategories filterCategory;
 
+    /**
+     * Parameterized constructor to create a ShelterAdapter object for a context with a list of
+     * Shelters
+     *
+     * @param context Context that will use this ShelterAdapter object
+     * @param list The list of Shelters that the adapter will hold
+     */
     public ShelterAdapter(Context context, List<Shelter> list) {
         super(context, 0, list);
         this.arrayList = list;
         this.filterCategory = FilterCategories.NAME;
     }
 
+    /**
+     * Returns a list of Shelters that this adapter currently holds.
+     *
+     * @return list of Shelters
+     */
     public List<Shelter> getShelters() {
         return arrayList;
     }
 
-    public void setSearchCategory(FilterCategories searchCategory) {
-        this.filterCategory = searchCategory;
+    /**
+     * Sets the filter category that getFilter() will use.
+     *
+     * @param filterCategory the FilterCategories
+     */
+    public void setSearchCategory(FilterCategories filterCategory) {
+        this.filterCategory = filterCategory;
     }
 
     @NonNull

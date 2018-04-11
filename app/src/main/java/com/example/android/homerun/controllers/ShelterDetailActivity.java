@@ -13,7 +13,9 @@ import com.example.android.homerun.model.Shelter;
 import com.example.android.homerun.model.User;
 import com.example.android.homerun.model.UtilityMethods;
 
-
+/**
+ * A screen that displays more details about a Shelter
+ */
 public class ShelterDetailActivity extends AppCompatActivity {
     private Shelter current;
     private User currentUser;
@@ -108,12 +110,13 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             String spotsData;
                             if ((shelterType == 1) || ((shelterType == 0) && (spotsClaimed <= 2))) {
                                 spotsData = "individual/";
-                                UtilityMethods.updateShelter(current, null,
-                                        current.getCurrentIndividualCapacity() - spotsClaimed);
+                                UtilityMethods.updateShelter(current,
+                                        current.getCurrentIndividualCapacity()
+                                                - spotsClaimed, null);
                             } else {
                                 spotsData = "family/";
-                                UtilityMethods.updateShelter(current,
-                                        current.getCurrentFamilyCapacity() - spotsClaimed, null);
+                                UtilityMethods.updateShelter(current,null,
+                                        current.getCurrentFamilyCapacity() - spotsClaimed);
                             }
 
                             spotsData += spotsClaimed;

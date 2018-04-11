@@ -16,90 +16,53 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
 
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
-    }
-
     /**
-     * Unit tests for getCapacityString() in Shelter.java.
+     * Unit tests for getCapacityString() in Shelter.java
+     *
      * @author Lauren Achey
      */
     @Test
-    public void shelterCapacityWithNoNullValues_isCorrect() {
-        Shelter testShelter = createShelterForTesting(0,
-                0
-        );
+    public void test_getCapacityString() {
+        Shelter testShelter = createShelterForTesting(0, 0);
         assertEquals("0 individual spots, 0 family spots", testShelter.getCapacityString());
-    }
 
-    /**
-     * Unit tests for getCapacityString() in Shelter.java.
-     * @author Lauren Achey
-     */
-    @Test
-    public void shelterCapacityWithNullFamilyValue_isCorrect() {
-        Shelter testShelter = createShelterForTesting(0,
-                null
-        );
+        testShelter = createShelterForTesting(0, null);
         assertEquals("0 individual spots", testShelter.getCapacityString());
-    }
 
-    /**
-     * Unit tests for getCapacityString() in Shelter.java.
-     * @author Lauren Achey
-     */
-    @Test
-    public void shelterCapacityWithNullIndividualShelterValue_isCorrect() {
-        Shelter testShelter = createShelterForTesting(null,
-                0
-        );
+        testShelter = createShelterForTesting(null, 0);
         assertEquals("0 family spots", testShelter.getCapacityString());
-    }
 
-    /**
-     * Unit tests for getCapacityString() in Shelter.java.
-     * @author Lauren Achey
-     */
-    @Test
-    public void shelterCapacityWithBothNull_isCorrect() {
-        Shelter testShelter = createShelterForTesting(null,
-                null
-        );
+        testShelter = createShelterForTesting(null, null);
         assertEquals("N/A", testShelter.getCapacityString());
     }
 
+    /**
+     * Unit tests for isEmailValid(String email) in UtilityMethods.java. Ensures that only valid
+     * emails are used when interacting with the application
+     *
+     * @author Jeffrey Jacob
+     */
     @Test
-    public void isEmalValidNullCheck() {
+    public void test_isEmailValid() {
+        //Test if null
         assertEquals(false, UtilityMethods.isEmailValid(null));
+        //Test if missing domain
+        assertEquals(false, UtilityMethods.isEmailValid("test@gmail"));
+        //Test if missing @ sign
+        assertEquals(false, UtilityMethods.isEmailValid("testgmail.com"));
+        //Test if not an email
+        assertEquals(false, UtilityMethods.isEmailValid("notAnEmail"));
+        //Test valid email
+        assertEquals(true, UtilityMethods.isEmailValid("test@email.com"));
     }
 
+    /**
+     * Test isNameValid() in UtilityMethods.java
+     *
+     * @author Animesh Fatehpuria
+     */
     @Test
-    public void isEmalValidInvalidEmail_nocom() {
-        String testEmail = "test@gmail";
-        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
-    }
-
-    @Test
-    public void isEmalValidInvalidEmail_noAt() {
-        String testEmail = "testgmail.com";
-        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
-    }
-
-    @Test
-    public void isEmalValidInvalidEmail_notEmail() {
-        String testEmail = "notAnEmail";
-        assertEquals(false, UtilityMethods.isEmailValid(testEmail));
-    }
-
-    @Test
-    public void isEmalValid_validEmail() {
-        String testEmail = "test@email.com";
-        assertEquals(true, UtilityMethods.isEmailValid(testEmail));
-    }
-  
-    @Test
-    public void testIsNameValid() {
+    public void test_isNameValid() {
         // Test for empty string
         assertEquals(false, UtilityMethods.isNameValid(""));
         // Test for null string
@@ -126,26 +89,11 @@ public class ExampleUnitTest {
         assertEquals(true, UtilityMethods.isNameValid("animesh français"));
     }
 
-    /*
-     * This method is used for any tests that need a Shelter. It creates a new
-     * shelter each time with the given parameters.
+    /**
+     * Test isUsernameValid() in UtilityMethods.java
+     *
+     * @author Prabhav Chawla
      */
-    private Shelter createShelterForTesting(Integer originalIndividualCapacity,
-                                            Integer originalFamilyCapacity) {
-        return (new Shelter("1",
-                "TestShelter",
-                            originalIndividualCapacity,
-                            originalFamilyCapacity,
-                "",
-                0.0,
-                0.0,
-                "",
-                "No special notes",
-                "1234561234",
-                AgeCategories.ANYONE,
-                GenderCategories.ANYONE));
-    }
-
     @Test
     public void test_isUsernameValid() {
         // Can't have null or empty username
@@ -170,18 +118,63 @@ public class ExampleUnitTest {
         assertEquals(true, UtilityMethods.isUsernameValid("213adasd"));
         assertEquals(true, UtilityMethods.isUsernameValid("prabhav_chawla22"));
     }
+
+    /**
+     * Test isPasswordValid() in UtilityMethods.java
+     *
+     * @author Anand Chaturvedi
+     */
     @Test
-    public void PasswordIsNull() {
+    public void test_isPasswordValid() {
+        // password cannot be null
         assertEquals(false, UtilityMethods.isPasswordValid(null));
-    }
-    @Test
-    public void PasswordIsNotValid() {
+        // password has to be six characters minimum
         CharSequence testPassword = "pass";
         assertEquals(false, UtilityMethods.isPasswordValid(testPassword));
-    }
-    @Test
-    public void PasswordIsValid() {
-        CharSequence testPassword = "Lifeofpablo4";
+        // accepted password
+        testPassword = "Lifeofpablo4";
         assertEquals(true, UtilityMethods.isPasswordValid(testPassword));
+    }
+
+    /**
+     * Test updateShelter() in UtilityMethods.java
+     *
+     * @author Camille Atere-Roberts
+     */
+    @Test
+    public void test_updateShelter() {
+        // Update individual capacity:
+        Shelter testShelter = createShelterForTesting(5,5);
+
+        UtilityMethods.updateShelter(testShelter,10,null);
+
+        assertEquals((long) 10, (long) testShelter.getCurrentIndividualCapacity());
+        assertEquals((long) 5, (long) testShelter.getCurrentFamilyCapacity());
+
+        // Update family capacity:
+        testShelter = createShelterForTesting(5,5);
+
+        UtilityMethods.updateShelter(testShelter,null,10);
+
+        assertEquals((long) 5, (long) testShelter.getCurrentIndividualCapacity());
+        assertEquals((long) 10, (long) testShelter.getCurrentFamilyCapacity());
+
+    }
+
+    /**
+     * This method is used for any tests that need a Shelter. It creates a new shelter with null id
+     * (to ensure that data on Firebase doesn't get changed if updateShelter is called on it) each
+     * time with the given capacity parameters.
+     *
+     * @param originalIndividualCapacity of the new Shelter object
+     * @param originalFamilyCapacity of the new Shelter object
+     * @return The newly created Shelter object
+     */
+    private Shelter createShelterForTesting(Integer originalIndividualCapacity,
+                                            Integer originalFamilyCapacity) {
+        return (new Shelter(null, "TestShelter", originalIndividualCapacity,
+                originalFamilyCapacity, "", 0.0, 0.0, "",
+                "No special notes", "1234561234", AgeCategories.ANYONE,
+                GenderCategories.ANYONE));
     }
 }

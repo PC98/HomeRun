@@ -16,6 +16,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 
+/**
+ * Activity that allows the user to view the list of filtered shelters on a map.
+ */
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener,
           OnMapReadyCallback {
     private final double ATL_LAT = 33.753746;
