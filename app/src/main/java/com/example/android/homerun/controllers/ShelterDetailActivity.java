@@ -11,7 +11,6 @@ import android.app.AlertDialog;
 import com.example.android.homerun.R;
 import com.example.android.homerun.model.Shelter;
 import com.example.android.homerun.model.User;
-import com.example.android.homerun.model.UtilityMethods;
 
 /**
  * A screen that displays more details about a Shelter
@@ -30,7 +29,7 @@ public class ShelterDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shelter_detail);
 
         current = DashboardActivity.shelterMap.get(getIntent().getStringExtra("shelterId"));
-        currentUser = DashboardActivity.currentUser;
+        currentUser = LoginActivity.currentUser;
 
         setTitle(current.getName());
 
@@ -110,17 +109,19 @@ public class ShelterDetailActivity extends AppCompatActivity {
                             String spotsData;
                             if ((shelterType == 1) || ((shelterType == 0) && (spotsClaimed <= 2))) {
                                 spotsData = "individual/";
-                                UtilityMethods.updateShelter(current,
-                                        current.getCurrentIndividualCapacity()
-                                                - spotsClaimed, null);
+                                current.firebaseSetCurrentIndividualCapacity(current
+                                        .getCurrentIndividualCapacity() - spotsClaimed);
                             } else {
                                 spotsData = "family/";
-                                UtilityMethods.updateShelter(current,null,
-                                        current.getCurrentFamilyCapacity() - spotsClaimed);
+                                current.firebaseSetCurrentFamilyCapacity(current
+                                        .getCurrentFamilyCapacity() - spotsClaimed);
                             }
 
                             spotsData += spotsClaimed;
-                            UtilityMethods.updateUser(currentUser, current.getId(), spotsData);
+
+                            currentUser.firebaseSetClaimedShelterId(current.getId());
+                            currentUser.firebaseSetClaimedSpots(spotsData);
+
                             shelter_capacity_widget.setText(getString(R.string.capacity,
                                     current.getCapacityString()));
 

@@ -55,7 +55,7 @@ public class DashboardActivity extends AppCompatActivity {
     private ListView mListView;
     private Spinner mFilterCategories;
     private View mView;
-    public static User currentUser;
+    private User currentUser;
     public static Map<String, Shelter> shelterMap;
     public static ShelterAdapter shelterAdapter;
 
@@ -77,23 +77,27 @@ public class DashboardActivity extends AppCompatActivity {
         mToastToShow.show();
         showProgress(true);
 
-        Query userQuery = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_USERS).child(currentUserId);
-        ValueEventListener userQueryEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                currentUser = dataSnapshot.getValue(User.class);
-            }
+        if (currentUserId != null) {
+            Query userQuery = FirebaseDatabase.getInstance()
+                    .getReference(FirebaseConstants.DATABASE_USERS).child(currentUserId);
+            ValueEventListener userQueryEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    currentUser = dataSnapshot.getValue(User.class);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        userQuery.addListenerForSingleValueEvent(userQueryEventListener);
+                }
+            };
+            userQuery.addListenerForSingleValueEvent(userQueryEventListener);
+        } else {
+            currentUser = LoginActivity.currentUser;
+        }
 
-        DatabaseReference shelterRef = FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_SHELTERS);
+        DatabaseReference shelterRef = FirebaseDatabase.getInstance()
+                .getReference(FirebaseConstants.DATABASE_SHELTERS);
         ValueEventListener shelterQueryEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -283,18 +287,19 @@ public class DashboardActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String[] spots = currentUser.getClaimedSpots().split("/");
-                        UtilityMethods.updateUser(currentUser, null, null);
+                        currentUser.firebaseSetClaimedShelterId(null);
+                        currentUser.firebaseSetClaimedSpots(null);
 
                         if("family".equalsIgnoreCase(spots[0])) {
                             assert claimedShelter != null;
-                            UtilityMethods.updateShelter(claimedShelter, null,
+                            claimedShelter.firebaseSetCurrentFamilyCapacity(
                                     claimedShelter.getCurrentFamilyCapacity() +
-                                            Integer.parseInt(spots[1]));
+                                    Integer.parseInt(spots[1]));
                         } else {
                             assert claimedShelter != null;
-                            UtilityMethods.updateShelter(claimedShelter,
-                                    claimedShelter.getCurrentIndividualCapacity()
-                                            + Integer.parseInt(spots[1]), null);
+                            claimedShelter.firebaseSetCurrentIndividualCapacity(
+                                    claimedShelter.getCurrentIndividualCapacity() +
+                                            Integer.parseInt(spots[1]));
                         }
 
                         final Toast vacateSuccess = Toast.makeText(getApplicationContext(),
