@@ -1,5 +1,7 @@
 package com.example.android.homerun.model;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * A class to represent a shelter
  */
@@ -155,11 +157,39 @@ public class Shelter {
     public void setCurrentIndividualCapacity(Integer i) {this.currentIndividualCapacity = i;}
 
     /**
+     * Calls the setter for currentIndividualCapacity and update the value on Firebase as well
+     *
+     * @param i an integer value representing the new individual capacity for this Shelter
+     */
+    public void firebaseSetCurrentIndividualCapacity(Integer i) {
+        setCurrentIndividualCapacity(i);
+
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.DATABASE_SHELTERS)
+                .child(id)
+                .child(FirebaseConstants.DATABASE_CUR_INDIVIDUAL_CAPACITY)
+                .setValue(currentIndividualCapacity);
+    }
+
+    /**
      * Setter for currentFamilyCapacity
      *
      * @param i an integer value representing the new family capacity for this Shelter
      */
     public void setCurrentFamilyCapacity(Integer i) {this.currentFamilyCapacity = i;}
+
+    /**
+     * Calls the setter for currentFamilyCapacity and updates the value on Firebase as well
+     *
+     * @param i an integer value representing the new family capacity for this Shelter
+     */
+    public void firebaseSetCurrentFamilyCapacity(Integer i) {
+        setCurrentFamilyCapacity(i);
+
+        FirebaseDatabase.getInstance().getReference(FirebaseConstants.DATABASE_SHELTERS).child(id)
+                .child(FirebaseConstants.DATABASE_CUR_FAMILY_CAPACITY)
+                .setValue(currentFamilyCapacity);
+    }
+
 
     /**
      * Returns both the individual and family capacity of this Shelter as a String

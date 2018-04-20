@@ -25,13 +25,18 @@ import android.widget.TextView;
 
 import com.example.android.homerun.R;
 import com.example.android.homerun.model.FirebaseConstants;
+import com.example.android.homerun.model.User;
 import com.example.android.homerun.model.UtilityMethods;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A login screen that offers login via username/password.
@@ -42,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    public static User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +110,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-
-        FirebaseApp.initializeApp(this);
     }
 
     @Override
@@ -113,9 +117,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            launchDashboardActivity(currentUser.getUid());
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            Intent intent = new Intent(this, DashboardActivity.class);
+            intent.putExtra("userId", firebaseUser.getUid());
+            startActivity(intent);
         }
     }
 
@@ -129,11 +135,15 @@ public class LoginActivity extends AppCompatActivity {
 
         showProgress(false);
     }
-  
-    private void launchDashboardActivity(String userId) {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        intent.putExtra("userId", userId);
-        startActivity(intent);
+
+    private void presentAlert(CharSequence title, CharSequence message) {
+        showProgress(false);
+
+        AlertDialog.Builder alert  = new AlertDialog.Builder(LoginActivity.this);
+        alert.setMessage(message);
+        alert.setTitle(title);
+        alert.setPositiveButton("OK", null);
+        alert.create().show();
     }
 
     private void attemptLogin() {
@@ -191,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    private void firebaseLoginUser(String username, String password) {
+    private void firebaseLoginUser(final String username, String password) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(LoginActivity.this,
                         new OnCompleteListener<AuthResult>() {
@@ -199,24 +209,84 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Sign in success!
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    assert user != null;
-                                    LoginActivity.this.launchDashboardActivity(user.getUid());
+                                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                    assert firebaseUser != null;
+
+                                    Query userQuery = FirebaseDatabase.getInstance()
+                                            .getReference(FirebaseConstants.DATABASE_USERS)
+                                            .child(firebaseUser.getUid());
+
+                                    ValueEventListener userQueryEventListener = new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            currentUser = dataSnapshot.getValue(User.class);
+
+                                            assert currentUser != null;
+                                            if (currentUser.isLockedOut()) {
+                                                FirebaseAuth.getInstance().signOut();
+                                                presentAlert("Account Locked",
+                                                        "You have been temporarily locket " +
+                                                                "out. Try again later.");
+                                            } else {
+                                                LoginActivity.this.startActivity(new Intent(
+                                                        LoginActivity.this, DashboardActivity.class));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {}
+                                    };
+
+                                    userQuery.addListenerForSingleValueEvent(
+                                            userQueryEventListener);
                                 } else {
-                                    showProgress(false);
-                                    // Display an error dialog.
-                                    mUsernameView.setText("");
-                                    mPasswordView.setText("");
+                                    Query userQuery = FirebaseDatabase.getInstance()
+                                            .getReference(FirebaseConstants.DATABASE_USERS)
+                                            .orderByChild(FirebaseConstants.DATABASE_USERNAME)
+                                            .equalTo(username);
 
-                                    mUsernameView.requestFocus();
-                                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(
-                                            LoginActivity.this);
+                                    ValueEventListener userQueryEventListener = new
+                                            ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.getValue() == null) {
+                                                presentAlert("Invalid Credentials",
+                                                        "Wrong Password or Username.");
+                                                return;
+                                            }
 
-                                    dlgAlert.setMessage("Wrong Password or Username");
-                                    dlgAlert.setTitle("Invalid Credentials");
-                                    dlgAlert.setPositiveButton("OK", null);
-                                    dlgAlert.create().show();
+                                            for (DataSnapshot item: dataSnapshot.getChildren()) {
+                                                currentUser = item.getValue(User.class);
+                                            }
+
+                                            assert currentUser != null;
+
+                                            if (!currentUser.isLockedOut()) {
+                                                currentUser.handleIncorrectLoginAttempt();
+                                            }
+
+                                            if (currentUser.isLockedOut()) {
+                                                presentAlert("Account Locked",
+                                                        "You have been temporarily locket " +
+                                                                "out. Try again later.");
+                                            } else {
+                                                presentAlert("Invalid Credentials",
+                                                        "Wrong Password or Username." +
+                                                                (currentUser.getIncorrectLoginAttempts() == 2 ?
+                                                                "You will be locked out after one more incorrect attempt." : ""));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {}
+                                    };
+
+                                    userQuery.addListenerForSingleValueEvent(userQueryEventListener);
                                 }
+
+                                mUsernameView.setText("");
+                                mPasswordView.setText("");
+                                mUsernameView.requestFocus();
                             }
                         });
     }

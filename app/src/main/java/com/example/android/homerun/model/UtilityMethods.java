@@ -1,8 +1,5 @@
 package com.example.android.homerun.model;
 
-
-import android.util.Log;
-
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedReader;
@@ -101,8 +98,7 @@ public class UtilityMethods {
                         Double.parseDouble(row[6]), row[7], row[8], row[9],
                         AgeCategories.valueOf(row[10]), GenderCategories.valueOf(row[11]));
                 shelterMap.put(shelter.getId(), shelter);
-                FirebaseDatabase.getInstance().getReference()
-                        .child(FirebaseConstants.DATABASE_SHELTERS)
+                FirebaseDatabase.getInstance().getReference(FirebaseConstants.DATABASE_SHELTERS)
                         .child(shelter.getId())
                         .setValue(shelter);
 
@@ -120,72 +116,5 @@ public class UtilityMethods {
                 throw new RuntimeException("Error while closing input stream: "+e);
             }
         }
-    }
-
-    /**
-     * Updates either currentIndividualCapacity OR currentFamilyCapacity of a Shelter, both locally
-     * and on Firebase (if possible). Either the currentIndividualCapacity or the
-     * currentFamilyCapacity parameter is null - this is done so that only one attribute of Shelter
-     * is updated in a single call and Firebase doesn't register multiple onChildChanged() callbacks
-     * in DashboardActivity.java
-     *
-     * @param shelter the Shelter object that needs to be modified
-     * @param currentIndividualCapacity the new individual capacity of shelter, else null
-     * @param currentFamilyCapacity the new family capacity of shelter, else null
-     */
-    public static void updateShelter(Shelter shelter, Integer currentIndividualCapacity,
-                                     Integer currentFamilyCapacity) {
-        if (currentFamilyCapacity == null) {
-            shelter.setCurrentIndividualCapacity(currentIndividualCapacity);
-
-            try {
-                FirebaseDatabase.getInstance().getReference()
-                        .child(FirebaseConstants.DATABASE_SHELTERS)
-                        .child(shelter.getId())
-                        .child(FirebaseConstants.DATABASE_CUR_INDIVIDUAL_CAPACITY)
-                        .setValue(shelter.getCurrentIndividualCapacity());
-            } catch (Exception e) {
-                Log.e("Firebase", e.getMessage());
-            }
-        } else {
-            assert currentIndividualCapacity == null;
-
-            shelter.setCurrentFamilyCapacity(currentFamilyCapacity);
-
-            try {
-                FirebaseDatabase.getInstance().getReference()
-                        .child(FirebaseConstants.DATABASE_SHELTERS)
-                        .child(shelter.getId())
-                        .child(FirebaseConstants.DATABASE_CUR_FAMILY_CAPACITY)
-                        .setValue(shelter.getCurrentFamilyCapacity());
-            } catch (Exception e) {
-                Log.e("Firebase", e.getMessage());
-            }
-        }
-    }
-
-    /**
-     * Updates claimedShelterId and claimedSpots of a User, both locally and on Firebase.
-     *
-     * @param user the User object that needs to be modified
-     * @param claimedShelterId the ID of the newly claimed shelter by user
-     * @param claimedSpots a String description of the the newly claimed shelter spots by user
-     */
-    public static void updateUser(User user, String claimedShelterId, String claimedSpots) {
-
-        user.setClaimedShelterId(claimedShelterId);
-        user.setClaimedSpots(claimedSpots);
-
-        FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_USERS)
-                .child(user.getId())
-                .child(FirebaseConstants.DATABASE_CLAIMED_SHELTER_ID)
-                .setValue(user.getClaimedShelterId());
-
-        FirebaseDatabase.getInstance().getReference()
-                .child(FirebaseConstants.DATABASE_USERS)
-                .child(user.getId())
-                .child(FirebaseConstants.DATABASE_CLAIMED_SPOTS)
-                .setValue(user.getClaimedSpots());
     }
 }

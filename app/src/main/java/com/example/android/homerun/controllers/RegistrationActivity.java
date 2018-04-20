@@ -198,8 +198,8 @@ public class RegistrationActivity extends AppCompatActivity {
                             FirebaseUser authUser = FirebaseAuth.getInstance().getCurrentUser();
                             assert authUser!= null;
                             user.setId(authUser.getUid());
-                            FirebaseDatabase.getInstance().getReference()
-                                    .child(FirebaseConstants.DATABASE_USERS)
+                            FirebaseDatabase.getInstance()
+                                    .getReference(FirebaseConstants.DATABASE_USERS)
                                     .child(user.getId())
                                     .setValue(user);
                         } else {

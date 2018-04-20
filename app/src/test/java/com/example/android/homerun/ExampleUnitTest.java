@@ -136,11 +136,12 @@ public class ExampleUnitTest {
         assertEquals(true, UtilityMethods.isPasswordValid(testPassword));
     }
 
+    /*
     /**
      * Test updateShelter() in UtilityMethods.java
      *
      * @author Camille Atere-Roberts
-     */
+
     @Test
     public void test_updateShelter() {
         // Update individual capacity:
@@ -160,6 +161,7 @@ public class ExampleUnitTest {
         assertEquals((long) 10, (long) testShelter.getCurrentFamilyCapacity());
 
     }
+    */
 
     /**
      * This method is used for any tests that need a Shelter. It creates a new shelter with null id
